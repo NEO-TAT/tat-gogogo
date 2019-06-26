@@ -1,17 +1,12 @@
 package main
 
 import (
-	"log"
-	"tat_gogogo/consts"
-	"tat_gogogo/routers"
+	"tat_gogogo/server"
+	"github.com/gin-gonic/gin"
 )
 
+var HttpServer *gin.Engine
 
 func main() {
-
-	log.Println(consts.Base)
-	apiClient := routers.Init()
-
-	apiClient.Run() // listen and serve on 0.0.0.0:8080
-
+	server.Run(HttpServer)
 }
