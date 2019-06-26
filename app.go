@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/url"
 	"tat_gogogo/consts"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,14 +29,14 @@ func main() {
 	apiClient := gin.Default()
 
 	apiClient.POST("/login", func(c *gin.Context) {
-		studentID := c.PostForm("studentID")
+		studentId := c.PostForm("studentId")
 		password := c.PostForm("password")
 
-		login(studentID, password)
+		login(studentId, password)
 
 		c.JSON(200, gin.H{
 			"status": "posted",
-			"muid":   studentID,
+			"muid":   studentId,
 		})
 	})
 
