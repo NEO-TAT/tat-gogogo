@@ -27,9 +27,9 @@ func login(studentID string, password string) {
 func main() {
 
 	log.Println(consts.Base)
-	r := gin.Default()
+	apiClient := gin.Default()
 
-	r.POST("/login", func(c *gin.Context) {
+	apiClient.POST("/login", func(c *gin.Context) {
 		studentID := c.PostForm("studentID")
 		password := c.PostForm("password")
 
@@ -41,6 +41,6 @@ func main() {
 		})
 	})
 
-	r.Run() // listen and serve on 0.0.0.0:8080
+	apiClient.Run() // listen and serve on 0.0.0.0:8080
 
 }
