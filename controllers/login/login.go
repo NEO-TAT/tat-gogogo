@@ -8,27 +8,35 @@ import (
 	"tat_gogogo/consts"
 	"log"
 	"bytes"
-	//"io/ioutil"
+	"encoding/json"
 )
 
 type Result struct {
 	success bool
 	status int
+	message string
 }
 
-func LoginController(c *gin.Context) {
-	studentId := c.PostForm("studentId")
+type LoginController struct {
+	studentID string
+	password string
+}
+
+func HandleLogin(c *gin.Context) {
+	studentID := c.PostForm("studentId")
 	password := c.PostForm("password")
+	
+	controller := LoginController{studentID: studentID, password: password}
 
-	login(studentId, password)
+	result := controller.handleRequest()
 
-	c.JSON(200, gin.H{
-		"status": "posted",
-		"muid":   studentId,
+	c.JSON(result.status, gin.H{
+		"success": result.success,
+		"message": result.message,
 	})
 }
 
-func newClient(studentID string, password string) (*http.Client, *http.Request) {
+func (controller *LoginController) newClient() (*http.Client, *http.Request) {
 	cookieJar, _ := cookiejar.New(nil)
 	
 	client := &http.Client{
@@ -37,8 +45,8 @@ func newClient(studentID string, password string) (*http.Client, *http.Request) 
 
 	data := 	url.Values{
 		"forceMobile": {"mobile"},
-		"mpassword": {password}, 
-		"muid": {studentID},
+		"mpassword": {controller.password}, 
+		"muid": {controller.studentID},
 	}
 
 	req, err := http.NewRequest("POST", consts.Login, bytes.NewBufferString(data.Encode()))
@@ -54,8 +62,8 @@ func newClient(studentID string, password string) (*http.Client, *http.Request) 
 	return client, req
 }
 
-func handleRequest(studentID string, password string) (Result) {
-	client, req := newClient(studentID, password)
+func (controller *LoginController) handleRequest() (Result) {
+	client, req := controller.newClient()
 	resp, err := client.Do(req)
 	
 	if err != nil {
@@ -65,12 +73,16 @@ func handleRequest(studentID string, password string) (Result) {
 
 	defer resp.Body.Close()
 
-	return Result{success: true, status: 200}
-}
+	var data map[string]interface{}
+	json.NewDecoder(resp.Body).Decode(&data)
 
-func login(studentID string, password string) {
+	statusCode := 200
+	isSuccess := data["success"].(bool)
+	message := "登入成功"
+	if !isSuccess {
+		statusCode = 401
+		message = "帳號或密碼錯誤，請重新輸入。"
+	}
 
-	result := handleRequest(studentID, password)
-
-	log.Println(result)
+	return Result{success: isSuccess, status: statusCode, message: message}
 }
