@@ -1,32 +1,47 @@
 package login
 
 import (
-	"github.com/gin-gonic/gin"
-	"net/http"
-	"net/http/cookieJar"
-	"net/url"
-	"tat_gogogo/consts"
-	"log"
 	"bytes"
 	"encoding/json"
+	"log"
+	"net/http"
+	"net/http/cookiejar"
+	"net/url"
+	"tat_gogogo/consts"
+
+	"github.com/gin-gonic/gin"
 )
 
+/*
+Result is the result of Login response
+success: is login successed
+status: the status of response
+message: show user that how login is going on
+*/
 type Result struct {
 	success bool
-	status int
+	status  int
 	message string
 }
 
-type LoginController struct {
+/*
+Controller is a struct which manipulate login request and send result back to user
+studentID: the id of student
+password: the password of student
+*/
+type Controller struct {
 	studentID string
-	password string
+	password  string
 }
 
+/*
+HandleLogin is a function for gin to handle login api
+*/
 func HandleLogin(c *gin.Context) {
 	studentID := c.PostForm("studentId")
 	password := c.PostForm("password")
-	
-	controller := LoginController{studentID: studentID, password: password}
+
+	controller := Controller{studentID: studentID, password: password}
 
 	result := controller.handleRequest()
 
@@ -36,17 +51,17 @@ func HandleLogin(c *gin.Context) {
 	})
 }
 
-func (controller *LoginController) newClient() (*http.Client, *http.Request) {
+func (controller *Controller) newClient() (*http.Client, *http.Request) {
 	cookieJar, _ := cookiejar.New(nil)
-	
+
 	client := &http.Client{
 		Jar: cookieJar,
 	}
 
-	data := 	url.Values{
+	data := url.Values{
 		"forceMobile": {"mobile"},
-		"mpassword": {controller.password}, 
-		"muid": {controller.studentID},
+		"mpassword":   {controller.password},
+		"muid":        {controller.studentID},
 	}
 
 	req, err := http.NewRequest("POST", consts.Login, bytes.NewBufferString(data.Encode()))
@@ -62,10 +77,10 @@ func (controller *LoginController) newClient() (*http.Client, *http.Request) {
 	return client, req
 }
 
-func (controller *LoginController) handleRequest() (Result) {
+func (controller *Controller) handleRequest() Result {
 	client, req := controller.newClient()
 	resp, err := client.Do(req)
-	
+
 	if err != nil {
 		log.Fatalln(err)
 		return Result{success: false, status: 401}
