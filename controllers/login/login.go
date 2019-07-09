@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
-	"tat_gogogo/consts"
+	"tat_gogogo/configs"
 
 	"github.com/gin-gonic/gin"
 )
@@ -52,6 +52,11 @@ func HandleLogin(c *gin.Context) {
 }
 
 func (controller *Controller) newClient() (*http.Client, *http.Request) {
+	config, err := configs.New()
+	if err != nil {
+		log.Panicln("failed to new configuration")
+	}
+
 	cookieJar, _ := cookiejar.New(nil)
 
 	client := &http.Client{
@@ -64,14 +69,14 @@ func (controller *Controller) newClient() (*http.Client, *http.Request) {
 		"muid":        {controller.studentID},
 	}
 
-	req, err := http.NewRequest("POST", consts.Login, bytes.NewBufferString(data.Encode()))
+	req, err := http.NewRequest("POST", config.PORTAL.Login, bytes.NewBufferString(data.Encode()))
 
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Referer", consts.IndexPage)
+	req.Header.Set("Referer", config.PORTAL.IndexPage)
 	req.Header.Set("User-Agent", "Direk Android App")
 
 	return client, req

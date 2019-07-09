@@ -1,25 +1,30 @@
 package server
 
-import(
-	"github.com/gin-gonic/gin"
-	"tat_gogogo/routes"
+import (
+	"log"
 	"tat_gogogo/configs"
+	"tat_gogogo/routes"
+
+	"github.com/gin-gonic/gin"
 )
 
+/*
+Run is the enter point of project
+*/
 func Run(httpServer *gin.Engine) {
 
-	serverConfig := configs.GetServerConfig()
+	configuration, err := configs.New()
+
+	if err != nil {
+		log.Panicln("Configuration err", err)
+	}
 
 	httpServer = gin.Default()
 
 	routes.RegisterRoutes(httpServer)
 
-	serverAddr := serverConfig["HOST"] + ":" + serverConfig["PORT"]
+	serverAddr := configuration.Constants.HOST + ":" + configuration.Constants.PORT
 
 	// listen and serve on 0.0.0.0:8080
-	err := httpServer.Run(serverAddr)
-
-	if err != nil {
-		panic("server run error: " + err.Error())
-	}
+	httpServer.Run(serverAddr)
 }
