@@ -3,7 +3,6 @@ package login
 import (
 	"encoding/json"
 	"net/http"
-	"net/http/cookiejar"
 	"tat_gogogo/crawler/portal"
 
 	"log"
@@ -29,26 +28,16 @@ Controller is a function for gin to handle login api
 func Controller(c *gin.Context) {
 	studentID := c.PostForm("studentId")
 	password := c.PostForm("password")
-	client := newClient()
+	client := portal.NewClient()
 	resp, err := portal.Login(client, studentID, password)
 
 	if err != nil {
-		log.Panicln("failed to getch login cookie")
+		log.Panicln("failed to fetch login cookie")
 		c.Status(500)
 		return
 	}
 
 	handleResponse(c, resp)
-}
-
-func newClient() *http.Client {
-	cookieJar, _ := cookiejar.New(nil)
-
-	client := &http.Client{
-		Jar: cookieJar,
-	}
-
-	return client
 }
 
 func handleResponse(c *gin.Context, resp *http.Response) {

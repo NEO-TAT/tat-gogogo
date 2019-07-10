@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"log"
 	"net/http"
+	"net/http/cookiejar"
 	"net/url"
 	"tat_gogogo/configs"
 )
@@ -19,6 +20,19 @@ func Login(client *http.Client, studentID string, password string) (*http.Respon
 	resp, err := client.Do(req)
 
 	return resp, err
+}
+
+/*
+NewClient is a function which init a http client for crawler
+*/
+func NewClient() *http.Client {
+	cookieJar, _ := cookiejar.New(nil)
+
+	client := &http.Client{
+		Jar: cookieJar,
+	}
+
+	return client
 }
 
 func newRequest(studentID string, password string) *http.Request {
