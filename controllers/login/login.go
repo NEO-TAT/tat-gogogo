@@ -1,36 +1,67 @@
 package login
 
 import (
-	"github.com/gin-gonic/gin"
+	"encoding/json"
 	"net/http"
-	"net/url"
-	"tat_gogogo/consts"
+	"tat_gogogo/crawler/portal"
+
 	"log"
+
+	"github.com/gin-gonic/gin"
 )
 
-func LoginController(c *gin.Context) {
-	studentId := c.PostForm("studentId")
-	password := c.PostForm("password")
-
-	login(studentId, password)
-
-	c.JSON(200, gin.H{
-		"status": "posted",
-		"muid":   studentId,
-	})
+/*
+Result is the result of Login response
+success: is login successed
+status: the status of response
+message: show user that how login is going on
+*/
+type Result struct {
+	success bool
+	status  int
+	message string
 }
 
-func login(studentID string, password string) {
-
-	res, err := http.PostForm(consts.Login,
-		url.Values{"forceMobile": {"mobile"}, "mpassword": {password}, "muid": {studentID}})
+/*
+Controller is a function for gin to handle login api
+*/
+func Controller(c *gin.Context) {
+	studentID := c.PostForm("studentId")
+	password := c.PostForm("password")
+	client := portal.NewClient()
+	resp, err := portal.Login(client, studentID, password)
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Panicln("failed to fetch login cookie")
+		c.Status(500)
+		return
 	}
 
-	res.Header.Set("Referer", consts.IndexPage)
-	res.Header.Set("User-Agent", "Direk Android App")
+	handleResponse(c, resp)
+}
 
-	log.Println(res.Cookies())
+func handleResponse(c *gin.Context, resp *http.Response) {
+	defer resp.Body.Close()
+
+	var data map[string]interface{}
+	var result Result
+	json.NewDecoder(resp.Body).Decode(&data)
+
+	statusCode := 200
+	isSuccess := data["success"].(bool)
+	message := "登入成功"
+	if !isSuccess {
+		statusCode = 401
+		message = "帳號或密碼錯誤，請重新輸入。"
+	}
+
+	result = Result{success: isSuccess, status: statusCode, message: message}
+
+	if result.status == 200 {
+		c.Status(200)
+	} else {
+		c.JSON(result.status, gin.H{
+			"message": result.message,
+		})
+	}
 }

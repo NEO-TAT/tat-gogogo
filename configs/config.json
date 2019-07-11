@@ -1,0 +1,13 @@
+{
+  "PORT": "8080",
+  "HOST": "0.0.0.0",
+  "PORTAL": {
+    "BASE": "https://app.ntut.edu.tw/",
+    "IndexPage": "https://app.ntut.edu.tw/index.do",
+    "Login": "https://app.ntut.edu.tw/login.do",
+    "MainPage": "https://app.ntut.edu.tw/myPortal.do",
+    "AptreeListPage": "https://app.ntut.edu.tw/aptreeList.do",
+    "AptreeAAListPage": "https://app.ntut.edu.tw/?apDn=ou=aa,ou=aproot,o=ldaproot",
+    "SsoLoginCourseSystem": "https://app.ntut.edu.tw/ssoIndex.do?apOu=aa_0010-&apUrl=https://aps.ntut.edu.tw/course/tw/courseSID.jsp"
+  }
+}
