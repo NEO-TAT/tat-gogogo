@@ -5,22 +5,25 @@ jobs:
       - image: circleci/golang:1.12
         environment:
           GO111MODULE: "ON"
-    working_directory: /go/src/github.com/NTUT-NPC/tat_gogogo
+    working_directory: /go/src/github.com/NTUT-NPC/tat_gogogo/
 
     steps:
       - checkout
+
       - restore_cache:
-        keys:
-          - go-mod-v1-{{ checksum "go.sum" }}
+          name: Restore go modules cache
+          keys:
+            - go-mod-v1-{{ checksum "go.sum" }}
 
       - run:
           name: Vendoring
           command: go mod download
 
       - save_cache:
+          name: Save go modules cache
           key: go-mod-v1-{{ checksum "go.sum" }}
           paths:
-            - "/go/pkg/mod"
+            - ~/go/pkg/mod/cache
 
       - run:
           name: Build go binary
