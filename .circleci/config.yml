@@ -1,0 +1,34 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.12
+        environment:
+          GO111MODULE: "ON"
+    working_directory: /go/src/github.com/NTUT-NPC/tat_gogogo
+
+    steps:
+      - checkout
+      - restore_cache:
+        keys:
+          - go-mod-v1-{{ checksum "go.sum" }}
+
+      - run:
+          name: Vendoring
+          command: go mod download
+
+      - save_cache:
+          key: go-mod-v1-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+
+      - run:
+          name: Build go binary
+          command: |
+            go build -v -o app app.go
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
