@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.12
-    working_directory: /go/src/github.com/NTUT-NPC/tat_gogogo/
+    working_directory: /go/src/github.com/NTUT-NPC/tat_gogogo
 
     steps:
       - checkout
@@ -22,11 +22,6 @@ jobs:
           key: go-mod-v1-{{ checksum "go.sum" }}
           paths:
             - ~/go/pkg/mod/cache
-
-      - run:
-          name: Build go binary
-          command: |
-            go build -v -o app app.go
 
 workflows:
   version: 2
