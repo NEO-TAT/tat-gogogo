@@ -45,7 +45,7 @@ jobs:
       - run:
           name: Deploy to digitalocean
           command:
-            - ssh -v $DROPLET_USER@$DROPLET_IP "cd ~/deploy; ./circle_deployer.sh"
+            - ssh -v $DROPLET_USER@$DROPLET_IP "cd ~/deploy; ./tat_deployer.sh"
 
 workflows:
   version: 2
