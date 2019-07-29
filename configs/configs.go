@@ -8,9 +8,10 @@ import (
 Constants is a struct which store the const within the projsct
 */
 type Constants struct {
-	HOST   string
-	PORT   string
-	PORTAL Portal
+	HOST          string
+	PORT          string
+	PORTAL        Portal
+	COURESESYSTEM CoureseSystem
 }
 
 /*
@@ -24,6 +25,12 @@ type Portal struct {
 	AptreeListPage       string
 	AptreeAAListPage     string
 	SsoLoginCourseSystem string
+}
+
+type CoureseSystem struct {
+	BASE     string
+	MainPage string
+	Select   string
 }
 
 /*

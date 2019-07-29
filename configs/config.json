@@ -9,5 +9,10 @@
     "AptreeListPage": "https://app.ntut.edu.tw/aptreeList.do",
     "AptreeAAListPage": "https://app.ntut.edu.tw/?apDn=ou=aa,ou=aproot,o=ldaproot",
     "SsoLoginCourseSystem": "https://app.ntut.edu.tw/ssoIndex.do?apOu=aa_0010-&apUrl=https://aps.ntut.edu.tw/course/tw/courseSID.jsp"
+  },
+  "COURESESYSTEM": {
+    "BASE": "https://aps.ntut.edu.tw/course/tw/",
+    "MainPage": "https://aps.ntut.edu.tw/course/tw/courseSID.jsp",
+    "Select": "https://aps.ntut.edu.tw/course/tw/Select.jsp"
   }
 }
