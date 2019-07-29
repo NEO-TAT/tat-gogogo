@@ -167,10 +167,15 @@ func loginCurriculum(studentID string, password string) (loginCourseResult porta
 		return loginResult, nil
 	}
 
-	req, _ := http.NewRequest("POST", config.PORTAL.SsoLoginCourseSystem, nil)
+	req, err := http.NewRequest("POST", config.PORTAL.SsoLoginCourseSystem, nil)
+	if err != nil {
+		log.Panicln(err)
+		return portal.Result{}, err
+	}
+
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println(err)
+		log.Panicln(err)
 		return portal.Result{}, err
 	}
 
@@ -318,10 +323,18 @@ func getCurriculumInfo(studentID string, year string, sem string) (info Info, er
 						element.Each(func(i int, el *goquery.Selection) {
 							switch columnMap[columnIndex] {
 							case "instructor":
-								big5Instructor, _ := decoder.DecodeToBig5(el.Text())
+								big5Instructor, err := decoder.DecodeToBig5(el.Text())
+								if err != nil {
+									log.Panicln(err)
+									break
+								}
 								course.Instructor = append(course.Instructor, strings.TrimSpace(big5Instructor))
 							case "classroom":
-								big5Classroom, _ := decoder.DecodeToBig5(el.Text())
+								big5Classroom, err := decoder.DecodeToBig5(el.Text())
+								if err != nil {
+									log.Panicln(err)
+									break
+								}
 								course.Classroom = append(course.Classroom, strings.TrimSpace(big5Classroom))
 							default:
 								log.Println("beyond the map", columnMap[columnIndex])
@@ -330,10 +343,18 @@ func getCurriculumInfo(studentID string, year string, sem string) (info Info, er
 					} else {
 						switch columnMap[columnIndex] {
 						case "id":
-							big5Id, _ := decoder.DecodeToBig5(element.Text())
+							big5Id, err := decoder.DecodeToBig5(element.Text())
+							if err != nil {
+								log.Panicln(err)
+								break
+							}
 							course.ID = strings.TrimSpace(big5Id)
 						case "name":
-							big5Name, _ := decoder.DecodeToBig5(element.Text())
+							big5Name, err := decoder.DecodeToBig5(element.Text())
+							if err != nil {
+								log.Panicln(err)
+								break
+							}
 							course.Name = strings.TrimSpace(big5Name)
 						default:
 							log.Println("beyond the map", columnMap[columnIndex])
