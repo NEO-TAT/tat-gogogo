@@ -8,17 +8,17 @@ import (
 Constants is a struct which store the const within the projsct
 */
 type Constants struct {
-	HOST          string
-	PORT          string
-	PORTAL        Portal
-	COURESESYSTEM CoureseSystem
+	Host          string
+	Port          string
+	Portal        Portal
+	CoureseSystem CoureseSystem
 }
 
 /*
 Portal contains all the urls of application
 */
 type Portal struct {
-	BASE                 string
+	Base                 string
 	IndexPage            string
 	Login                string
 	MainPage             string
@@ -27,8 +27,11 @@ type Portal struct {
 	SsoLoginCourseSystem string
 }
 
+/*
+CoureseSystem contains all of the elements from course system
+*/
 type CoureseSystem struct {
-	BASE     string
+	Base     string
 	MainPage string
 	Select   string
 }

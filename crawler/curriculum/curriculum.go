@@ -138,7 +138,7 @@ func handleCurriculumRequest(targetStudentID string) (result portal.Result, err 
 		"format": {"-3"},
 	}
 
-	curriculumRequest, err := http.NewRequest("POST", config.COURESESYSTEM.Select, strings.NewReader(form.Encode()))
+	curriculumRequest, err := http.NewRequest("POST", config.CoureseSystem.Select, strings.NewReader(form.Encode()))
 	if err != nil {
 		log.Panicln(err)
 		return portal.Result{}, err
@@ -192,7 +192,7 @@ func loginCurriculum(
 		return loginResult, nil
 	}
 
-	req, err := http.NewRequest("POST", config.PORTAL.SsoLoginCourseSystem, nil)
+	req, err := http.NewRequest("POST", config.Portal.SsoLoginCourseSystem, nil)
 	if err != nil {
 		log.Panicln(err)
 		return portal.Result{}, err
@@ -216,7 +216,7 @@ func loginCurriculum(
 func accessCourse(doc *goquery.Document) (loginCourseResult portal.Result, err error) {
 	form := parseFormBy(doc)
 
-	bufferRequest, err := http.NewRequest("POST", config.COURESESYSTEM.MainPage, strings.NewReader(form.Encode()))
+	bufferRequest, err := http.NewRequest("POST", config.CoureseSystem.MainPage, strings.NewReader(form.Encode()))
 	if err != nil {
 		log.Panicln(err)
 		return portal.Result{Success: false, Status: 500}, err
@@ -449,7 +449,7 @@ func handleCourseSelectRequest(
 	year string,
 	sem string,
 ) (buffer *http.Response, err error) {
-	bufferReq, err := http.NewRequest("GET", config.COURESESYSTEM.Select, nil)
+	bufferReq, err := http.NewRequest("GET", config.CoureseSystem.Select, nil)
 	if err != nil {
 		log.Panicln(err)
 		return nil, err

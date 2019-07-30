@@ -79,14 +79,14 @@ func newRequest(studentID string, password string) *http.Request {
 		"muid":        {studentID},
 	}
 
-	req, err := http.NewRequest("POST", config.PORTAL.Login, bytes.NewBufferString(data.Encode()))
+	req, err := http.NewRequest("POST", config.Portal.Login, bytes.NewBufferString(data.Encode()))
 
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Referer", config.PORTAL.IndexPage)
+	req.Header.Set("Referer", config.Portal.IndexPage)
 	req.Header.Set("User-Agent", "Direk Android App")
 
 	return req

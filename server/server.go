@@ -23,7 +23,7 @@ func Run(httpServer *gin.Engine) {
 
 	routes.RegisterRoutes(httpServer)
 
-	serverAddr := configuration.Constants.HOST + ":" + configuration.Constants.PORT
+	serverAddr := configuration.Constants.Host + ":" + configuration.Constants.Port
 
 	// listen and serve on 0.0.0.0:8080
 	httpServer.Run(serverAddr)
