@@ -1,4 +1,4 @@
-package arrhelp
+package arrutil
 
 /*
 IntIndexOf finds the index of target element

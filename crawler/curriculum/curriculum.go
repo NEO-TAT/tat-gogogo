@@ -8,7 +8,7 @@ import (
 	"tat_gogogo/configs"
 	"tat_gogogo/crawler/portal"
 
-	"tat_gogogo/utilities/arrhelp"
+	"tat_gogogo/utilities/arrutil"
 	"tat_gogogo/utilities/decoder"
 
 	"github.com/PuerkitoBio/goquery"
@@ -302,7 +302,7 @@ func parseRows(rows *goquery.Selection) (info Info) {
 	courses := []Course{}
 	rows.Each(func(rowIndex int, row *goquery.Selection) {
 		indexes := []int{0, 1, 2, rows.Length() - 1}
-		if arrhelp.IntIndexOf(indexes, rowIndex) == -1 {
+		if arrutil.IntIndexOf(indexes, rowIndex) == -1 {
 			periods := make([]string, 7)
 
 			instructor := []string{}
