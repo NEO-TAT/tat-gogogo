@@ -44,7 +44,7 @@ jobs:
             - ~/go/pkg/mod/cache
       - run:
           name: Deploy to digitalocean
-          command: ssh -v $DROPLET_USER@$DROPLET_IP "cd ~/deploy; ./tat_deployer.sh"
+          command: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "cd ~/deploy; ./tat_deployer.sh"
 
 workflows:
   version: 2
