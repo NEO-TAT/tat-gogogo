@@ -12,7 +12,7 @@ import (
 Controller is a function for gin to handle login api
 */
 func Controller(c *gin.Context) {
-	studentID := c.PostForm("studentId")
+	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
 	client := portal.NewClient()
 

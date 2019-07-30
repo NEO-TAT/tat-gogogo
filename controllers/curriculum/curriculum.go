@@ -12,9 +12,9 @@ import (
 Controller handle curriculum login api
 */
 func Controller(c *gin.Context) {
-	studentID := c.PostForm("studentId")
+	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
-	targetStudentID := c.PostForm("targetStudentId")
+	targetStudentID := c.PostForm("targetStudentID")
 
 	result, err := curriculum.GetCurriculums(studentID, password, targetStudentID)
 	if err != nil {
@@ -38,11 +38,11 @@ CourseController handle search course
 the default target student will be self
 */
 func CourseController(c *gin.Context) {
-	studentID := c.PostForm("studentId")
+	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
-	targetStudentID := c.PostForm("targetStudentId")
+	targetStudentID := c.PostForm("targetStudentID")
 	year := c.PostForm("year")
-	sem := c.PostForm("sem")
+	sem := c.PostForm("semester")
 
 	result, err := curriculum.GetCurriculumCourse(studentID, password, targetStudentID, year, sem)
 	if err != nil {
