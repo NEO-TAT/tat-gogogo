@@ -46,13 +46,30 @@ type Course struct {
 var (
 	config, configError = configs.New()
 	client              = portal.NewClient()
+	columnMap           = map[int]string{
+		0:  "id",
+		1:  "name",
+		6:  "instructor",
+		8:  "periodsOfSunday",
+		9:  "periodsOfMonday",
+		10: "periodsOfTuesday",
+		11: "periodsOfWednesday",
+		12: "periodsOfThursday",
+		13: "periodsOfFriday",
+		14: "periodsOfSaturday",
+		15: "classroom",
+	}
 )
 
 /*
 GetCurriculums return the curriculums
 the default targetStudentID will be self
 */
-func GetCurriculums(studentID string, password string, targetStudentID string) (curriculumResult portal.Result, err error) {
+func GetCurriculums(
+	studentID string,
+	password string,
+	targetStudentID string,
+) (curriculumResult portal.Result, err error) {
 	if configError != nil {
 		log.Panicln(configError)
 		return portal.Result{}, configError
@@ -78,7 +95,12 @@ func GetCurriculums(studentID string, password string, targetStudentID string) (
 /*
 GetCurriculumCourse return the course info
 */
-func GetCurriculumCourse(studentID string, password string, targetStudentID string, year string, sem string) (curriculumCourseResult portal.Result, err error) {
+func GetCurriculumCourse(
+	studentID string,
+	password string,
+	targetStudentID string,
+	year string,
+	sem string) (curriculumCourseResult portal.Result, err error) {
 	curriculumResult, err := GetCurriculums(studentID, password, targetStudentID)
 	if err != nil {
 		log.Panicln(err)
@@ -155,7 +177,10 @@ func parseCurriculums(doc *goquery.Document) (result portal.Result) {
 	return portal.Result{Data: curriculums, Status: 200, Success: true}
 }
 
-func loginCurriculum(studentID string, password string) (loginCourseResult portal.Result, err error) {
+func loginCurriculum(
+	studentID string,
+	password string,
+) (loginCourseResult portal.Result, err error) {
 	loginResult, err := portal.Login(client, studentID, password)
 
 	if err != nil {
@@ -218,7 +243,9 @@ func parseFormBy(doc *goquery.Document) (from url.Values) {
 	return form
 }
 
-func parseLoginCurriculumResult(buffer *http.Response) (loginCourseResult portal.Result, err error) {
+func parseLoginCurriculumResult(
+	buffer *http.Response,
+) (loginCourseResult portal.Result, err error) {
 	defer buffer.Body.Close()
 
 	courseDoc, err := goquery.NewDocumentFromReader(buffer.Body)
@@ -263,130 +290,165 @@ func getCurriculumInfo(studentID string, year string, sem string) (info Info, er
 		log.Panicln(err)
 	}
 
-	var courses []Course
-	columnMap := map[int]string{
-		0:  "id",
-		1:  "name",
-		6:  "instructor",
-		8:  "periodsOfSunday",
-		9:  "periodsOfMonday",
-		10: "periodsOfTuesday",
-		11: "periodsOfWednesday",
-		12: "periodsOfThursday",
-		13: "periodsOfFriday",
-		14: "periodsOfSaturday",
-		15: "classroom",
-	}
+	rows := courseDoc.Find("table").Last().Find("tr")
 
+	return parseRows(rows), nil
+}
+
+func parseRows(rows *goquery.Selection) (info Info) {
 	hasNoPeriodsCourses := false
 	hasSaturdayCourses := false
 	hasSundayCourses := false
-
-	rows := courseDoc.Find("table").Last().Find("tr")
-
+	courses := []Course{}
 	rows.Each(func(rowIndex int, row *goquery.Selection) {
 		indexes := []int{0, 1, 2, rows.Length() - 1}
 		if arrhelp.IntIndexOf(indexes, rowIndex) == -1 {
-			instructor := []string{}
 			periods := make([]string, 7)
+
+			instructor := []string{}
 			classroom := []string{}
 
-			course := Course{Instructor: instructor, Periods: periods, Classroom: classroom, ID: "", Name: ""}
+			course := Course{
+				Instructor: instructor,
+				Periods:    periods,
+				Classroom:  classroom,
+				ID:         "",
+				Name:       "",
+			}
 
 			columns := row.Find("td")
 
-			columns.Each(func(columnIndex int, column *goquery.Selection) {
-
-				if _, ok := columnMap[columnIndex]; ok {
-					var element *goquery.Selection
-
-					if column.Find("a").Length() == 0 {
-						element = column
-					} else {
-						element = column.Find("a")
-					}
-
-					if columnIndex >= 8 && columnIndex <= 14 {
-						day := columnIndex - 8
-
-						big5Element, _ := decoder.DecodeToBig5(element.Text())
-						course.Periods[day] = strings.TrimSpace(big5Element)
-
-						if !hasSaturdayCourses && day == 6 && len(course.Periods[day]) != 0 {
-							hasSaturdayCourses = true
-						}
-
-						if !hasSundayCourses && day == 0 && len(course.Periods[day]) != 0 {
-							hasSundayCourses = true
-						}
-					} else if columnIndex == 6 || columnIndex == 15 {
-						element.Each(func(i int, el *goquery.Selection) {
-							switch columnMap[columnIndex] {
-							case "instructor":
-								big5Instructor, err := decoder.DecodeToBig5(el.Text())
-								if err != nil {
-									log.Panicln(err)
-									break
-								}
-								course.Instructor = append(course.Instructor, strings.TrimSpace(big5Instructor))
-							case "classroom":
-								big5Classroom, err := decoder.DecodeToBig5(el.Text())
-								if err != nil {
-									log.Panicln(err)
-									break
-								}
-								course.Classroom = append(course.Classroom, strings.TrimSpace(big5Classroom))
-							default:
-								log.Println("beyond the map", columnMap[columnIndex])
-							}
-						})
-					} else {
-						switch columnMap[columnIndex] {
-						case "id":
-							big5Id, err := decoder.DecodeToBig5(element.Text())
-							if err != nil {
-								log.Panicln(err)
-								break
-							}
-							course.ID = strings.TrimSpace(big5Id)
-						case "name":
-							big5Name, err := decoder.DecodeToBig5(element.Text())
-							if err != nil {
-								log.Panicln(err)
-								break
-							}
-							course.Name = strings.TrimSpace(big5Name)
-						default:
-							log.Println("beyond the map", columnMap[columnIndex])
-						}
-					}
-				}
-			})
-
-			courses = append(courses, course)
-			if !hasNoPeriodsCourses {
-				temp := true
-				for _, p := range course.Periods {
-					if len(p) != 0 {
-						temp = false
-						break
-					}
-				}
-				hasNoPeriodsCourses = temp
-			}
+			parseColumns(columns, &hasSundayCourses, &hasSaturdayCourses, &course)
+			organizeInfo(&courses, course, &hasNoPeriodsCourses)
 		}
 	})
 
 	return Info{
-			HasNoPeriodsCourses: hasNoPeriodsCourses,
-			HasSaturdayCourses:  hasSaturdayCourses,
-			HasSundayCourses:    hasSundayCourses,
-			Courses:             courses,
-		},
-		nil
+		HasNoPeriodsCourses: hasNoPeriodsCourses,
+		HasSaturdayCourses:  hasSaturdayCourses,
+		HasSundayCourses:    hasSundayCourses,
+		Courses:             courses,
+	}
 }
 
-func handleCourseSelectRequest(studentID string, year string, sem string) (buffer *http.Response, err error) {
+func organizeInfo(courses *[]Course, course Course, hasNoPeriodsCourses *bool) {
+	*courses = append(*courses, course)
+	if !(*hasNoPeriodsCourses) {
+		temp := true
+		for _, p := range course.Periods {
+			if len(p) != 0 {
+				temp = false
+				break
+			}
+		}
+		*hasNoPeriodsCourses = temp
+	}
+}
+
+func parseColumns(
+	columns *goquery.Selection,
+	hasSundayCourses *bool,
+	hasSaturdayCourses *bool,
+	course *Course,
+) {
+	columns.Each(func(columnIndex int, column *goquery.Selection) {
+		if _, ok := columnMap[columnIndex]; ok {
+			var element *goquery.Selection
+
+			if column.Find("a").Length() == 0 {
+				element = column
+			} else {
+				element = column.Find("a")
+			}
+
+			if columnIndex >= 8 && columnIndex <= 14 {
+				handlePeriods(columnIndex, element, hasSundayCourses, hasSaturdayCourses, course)
+			} else if columnIndex == 6 || columnIndex == 15 {
+				handleInstructorAndClassroom(element, columnIndex, course)
+			} else {
+				handleIDAndName(element, columnIndex, course)
+			}
+		}
+	})
+}
+
+func handlePeriods(
+	columnIndex int,
+	element *goquery.Selection,
+	hasSundayCourses *bool,
+	hasSaturdayCourses *bool,
+	course *Course,
+) {
+	day := columnIndex - 8
+	big5Element, _ := decoder.DecodeToBig5(element.Text())
+	course.Periods[day] = strings.TrimSpace(big5Element)
+
+	if !(*hasSaturdayCourses) && day == 6 && len(course.Periods[day]) != 0 {
+		*hasSaturdayCourses = true
+	}
+
+	if !(*hasSundayCourses) && day == 0 && len(course.Periods[day]) != 0 {
+		*hasSundayCourses = true
+	}
+}
+
+func handleInstructorAndClassroom(
+	element *goquery.Selection,
+	columnIndex int,
+	course *Course,
+) {
+	element.Each(func(i int, el *goquery.Selection) {
+		switch columnMap[columnIndex] {
+		case "instructor":
+			big5Instructor, err := decoder.DecodeToBig5(el.Text())
+			if err != nil {
+				log.Panicln(err)
+				break
+			}
+			course.Instructor = append(course.Instructor, strings.TrimSpace(big5Instructor))
+		case "classroom":
+			big5Classroom, err := decoder.DecodeToBig5(el.Text())
+			if err != nil {
+				log.Panicln(err)
+				break
+			}
+			course.Classroom = append(course.Classroom, strings.TrimSpace(big5Classroom))
+		default:
+			log.Println("beyond the map", columnMap[columnIndex])
+		}
+	})
+}
+
+func handleIDAndName(
+	element *goquery.Selection,
+	columnIndex int,
+	course *Course,
+) {
+	switch columnMap[columnIndex] {
+	case "id":
+		big5Id, err := decoder.DecodeToBig5(element.Text())
+		if err != nil {
+			log.Panicln(err)
+			break
+		}
+		course.ID = strings.TrimSpace(big5Id)
+	case "name":
+		big5Name, err := decoder.DecodeToBig5(element.Text())
+		if err != nil {
+			log.Panicln(err)
+			break
+		}
+		course.Name = strings.TrimSpace(big5Name)
+	default:
+		log.Println("beyond the map", columnMap[columnIndex])
+	}
+}
+
+func handleCourseSelectRequest(
+	studentID string,
+	year string,
+	sem string,
+) (buffer *http.Response, err error) {
 	bufferReq, err := http.NewRequest("GET", config.COURESESYSTEM.Select, nil)
 	if err != nil {
 		log.Panicln(err)
