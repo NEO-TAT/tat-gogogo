@@ -19,7 +19,7 @@ Curriculum stores Year and semester of curriculum
 */
 type Curriculum struct {
 	Year     string `json:"year"`
-	Semester string `json:"Semester"`
+	Semester string `json:"semester"`
 }
 
 /*
@@ -27,9 +27,9 @@ Info stores Curriculum"s info
 */
 type Info struct {
 	HasNoPeriodsCourses bool     `json:"hasNoPeriodsCourses"`
-	HasSaturdayCourses  bool     `json:"HasSaturdayCourses"`
-	HasSundayCourses    bool     `json:"HasSundayCourses"`
-	Courses             []Course `json:"Courses"`
+	HasSaturdayCourses  bool     `json:"hasSaturdayCourses"`
+	HasSundayCourses    bool     `json:"hasSundayCourses"`
+	Courses             []Course `json:"courses"`
 }
 
 /*
