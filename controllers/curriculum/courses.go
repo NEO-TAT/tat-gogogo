@@ -9,16 +9,17 @@ import (
 )
 
 /*
-Controller handles curriculum
-it will get all the years and semesters
+CoursesController handle search courses
 the default target student will be self
 */
-func Controller(c *gin.Context) {
+func CoursesController(c *gin.Context) {
 	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
 	targetStudentID := c.PostForm("targetStudentID")
+	year := c.PostForm("year")
+	sem := c.PostForm("semester")
 
-	result, err := curriculum.GetCurriculums(studentID, password, targetStudentID)
+	result, err := curriculum.GetCourses(studentID, password, targetStudentID, year, sem)
 	if err != nil {
 		log.Panicln(err)
 		c.Status(500)

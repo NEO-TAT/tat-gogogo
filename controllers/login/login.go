@@ -27,6 +27,7 @@ func Controller(c *gin.Context) {
 		c.JSON(result.Status, gin.H{
 			"message": result.Data,
 		})
+		return
 	}
 
 	c.Status(200)
