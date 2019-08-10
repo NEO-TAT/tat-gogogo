@@ -8,19 +8,8 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"tat_gogogo/configs"
+	"tat_gogogo/model"
 )
-
-/*
-Result is the result of Login response
-success: is login successed
-status: the status of response
-data: the login result
-*/
-type Result struct {
-	Success bool
-	Status  int
-	Data    interface{}
-}
 
 /*
 Login is a function which handle login request
@@ -28,7 +17,7 @@ return: http.Client for future reuse
 studentID: the id of student
 password: the password of student
 */
-func Login(client *http.Client, studentID string, password string) (loginResult Result, err error) {
+func Login(client *http.Client, studentID string, password string) (loginResult model.Result, err error) {
 	req := newRequest(studentID, password)
 	resp, err := client.Do(req)
 	loginResult = handleResponse(resp)
@@ -49,7 +38,7 @@ func NewClient() *http.Client {
 	return client
 }
 
-func handleResponse(resp *http.Response) (loginResult Result) {
+func handleResponse(resp *http.Response) (loginResult model.Result) {
 	defer resp.Body.Close()
 
 	var data map[string]interface{}
@@ -64,7 +53,7 @@ func handleResponse(resp *http.Response) (loginResult Result) {
 		message = "帳號或密碼錯誤，請重新輸入。"
 	}
 
-	return Result{Success: isSuccess, Status: statusCode, Data: message}
+	return *model.NewResult(isSuccess, statusCode, message)
 }
 
 func newRequest(studentID string, password string) *http.Request {

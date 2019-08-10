@@ -2,7 +2,6 @@ package routes
 
 import (
 	"tat_gogogo/controllers/curriculum"
-	//"tat_gogogo/controllers/curriculum/courses"
 	"tat_gogogo/controllers/login"
 
 	"github.com/gin-gonic/gin"

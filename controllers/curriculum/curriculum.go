@@ -25,12 +25,12 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	if result.Status != 200 {
-		c.JSON(result.Status, gin.H{
-			"message": result.Data,
+	if result.GetStatus() != 200 {
+		c.JSON(result.GetStatus(), gin.H{
+			"message": result.GetData(),
 		})
 		return
 	}
 
-	c.JSON(result.Status, result.Data)
+	c.JSON(result.GetStatus(), result.GetData())
 }

@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"tat_gogogo/crawler/portal"
 	"tat_gogogo/utilities/arrutil"
 	"tat_gogogo/utilities/decoder"
+	"tat_gogogo/model"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -21,19 +21,19 @@ func GetCourses(
 	targetStudentID string,
 	year string,
 	sem string,
-) (curriculumCourseResult portal.Result, err error) {
+) (curriculumCourseResult model.Result, err error) {
 	curriculumResult, err := GetCurriculums(studentID, password, targetStudentID)
 	if err != nil {
 		log.Panicln(err)
-		return portal.Result{}, err
+		return model.Result{}, err
 	}
 
-	if !curriculumResult.Success {
+	if !curriculumResult.GetSuccess() {
 		return curriculumResult, nil
 	}
 
 	isSameYearAndSem := false
-	for _, curriculum := range curriculumResult.Data.([]Curriculum) {
+	for _, curriculum := range curriculumResult.GetData().([]model.Curriculum) {
 		if curriculum.Year == year && curriculum.Semester == sem {
 			isSameYearAndSem = true
 			break
@@ -41,26 +41,26 @@ func GetCourses(
 	}
 
 	if !isSameYearAndSem {
-		return portal.Result{Data: "查無該學年或學期資料", Status: 400, Success: false}, nil
+		return *model.NewResult(false, 400, "查無該學年或學期資料"), nil
 	}
 
 	info, err := getCurriculumInfo(studentID, year, sem)
 	if err != nil {
 		log.Panicln(err)
-		return portal.Result{}, err
+		return model.Result{}, err
 	}
 
-	return portal.Result{Data: info, Status: 200, Success: true}, nil
+	return *model.NewResult(true, 200, info), nil
 }
 
 func getCurriculumInfo(
 	studentID string,
 	year string,
 	sem string,
-) (info Info, err error) {
+) (info model.Info, err error) {
 	buffer, err := handleCourseSelectRequest(studentID, year, sem)
 	if err != nil {
-		return Info{}, err
+		return model.Info{}, err
 	}
 
 	defer buffer.Body.Close()
@@ -75,11 +75,11 @@ func getCurriculumInfo(
 	return parseRows(rows), nil
 }
 
-func parseRows(rows *goquery.Selection) (info Info) {
+func parseRows(rows *goquery.Selection) (info model.Info) {
 	hasNoPeriodsCourses := false
 	hasSaturdayCourses := false
 	hasSundayCourses := false
-	courses := []Course{}
+	courses := []model.Course{}
 	rows.Each(func(rowIndex int, row *goquery.Selection) {
 		indexes := []int{0, 1, 2, rows.Length() - 1}
 		if arrutil.IntIndexOf(indexes, rowIndex) == -1 {
@@ -88,7 +88,7 @@ func parseRows(rows *goquery.Selection) (info Info) {
 			instructor := []string{}
 			classroom := []string{}
 
-			course := Course{
+			course := model.Course{
 				Instructor: instructor,
 				Periods:    periods,
 				Classroom:  classroom,
@@ -103,7 +103,7 @@ func parseRows(rows *goquery.Selection) (info Info) {
 		}
 	})
 
-	return Info{
+	return model.Info{
 		HasNoPeriodsCourses: hasNoPeriodsCourses,
 		HasSaturdayCourses:  hasSaturdayCourses,
 		HasSundayCourses:    hasSundayCourses,
@@ -111,7 +111,7 @@ func parseRows(rows *goquery.Selection) (info Info) {
 	}
 }
 
-func organizeInfo(courses *[]Course, course Course, hasNoPeriodsCourses *bool) {
+func organizeInfo(courses *[]model.Course, course model.Course, hasNoPeriodsCourses *bool) {
 	*courses = append(*courses, course)
 	if !(*hasNoPeriodsCourses) {
 		temp := true
@@ -129,7 +129,7 @@ func parseColumns(
 	columns *goquery.Selection,
 	hasSundayCourses *bool,
 	hasSaturdayCourses *bool,
-	course *Course,
+	course *model.Course,
 ) {
 	columns.Each(func(columnIndex int, column *goquery.Selection) {
 		if _, ok := columnMap[columnIndex]; ok {
@@ -157,7 +157,7 @@ func handlePeriods(
 	element *goquery.Selection,
 	hasSundayCourses *bool,
 	hasSaturdayCourses *bool,
-	course *Course,
+	course *model.Course,
 ) {
 	day := columnIndex - 8
 	big5Element, _ := decoder.DecodeToBig5(element.Text())
@@ -175,7 +175,7 @@ func handlePeriods(
 func handleInstructorAndClassroom(
 	element *goquery.Selection,
 	columnIndex int,
-	course *Course,
+	course *model.Course,
 ) {
 	element.Each(func(i int, el *goquery.Selection) {
 		switch columnMap[columnIndex] {
@@ -202,7 +202,7 @@ func handleInstructorAndClassroom(
 func handleIDAndName(
 	element *goquery.Selection,
 	columnIndex int,
-	course *Course,
+	course *model.Course,
 ) {
 	switch columnMap[columnIndex] {
 	case "id":
