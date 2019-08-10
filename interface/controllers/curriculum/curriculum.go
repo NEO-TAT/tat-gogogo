@@ -1,7 +1,7 @@
 package curriculum
 
 import (
-	"tat_gogogo/crawler/curriculum"
+	"tat_gogogo/usecase/crawler/curriculum"
 
 	"log"
 

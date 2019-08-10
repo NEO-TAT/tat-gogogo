@@ -1,7 +1,7 @@
 package login
 
 import (
-	"tat_gogogo/crawler/portal"
+	"tat_gogogo/usecase/crawler/portal"
 
 	"log"
 

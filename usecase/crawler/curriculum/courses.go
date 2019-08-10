@@ -6,7 +6,7 @@ import (
 	"strings"
 	"tat_gogogo/utilities/arrutil"
 	"tat_gogogo/utilities/decoder"
-	"tat_gogogo/model"
+	"tat_gogogo/domain/model"
 
 	"github.com/PuerkitoBio/goquery"
 )

@@ -6,8 +6,8 @@ import (
 	"net/url"
 	"strings"
 	"tat_gogogo/configs"
-	"tat_gogogo/model"
-	"tat_gogogo/crawler/portal"
+	"tat_gogogo/domain/model"
+	"tat_gogogo/usecase/crawler/portal"
 	"tat_gogogo/utilities/decoder"
 
 	"github.com/PuerkitoBio/goquery"

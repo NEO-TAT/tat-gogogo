@@ -8,7 +8,7 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"tat_gogogo/configs"
-	"tat_gogogo/model"
+	"tat_gogogo/domain/model"
 )
 
 /*
