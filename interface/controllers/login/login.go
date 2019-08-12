@@ -13,11 +13,12 @@ import (
 
 /*
 Controller is a function for gin to handle login api
+@parameter: *gin.Context
 */
 func Controller(c *gin.Context) {
 	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
-	client := httcli.NewClient()
+	client := httcli.GetInstance()
 
 	repo := repository.NewResultRepository()
 	service := service.NewResultService(repo)
