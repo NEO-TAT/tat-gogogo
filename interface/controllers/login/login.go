@@ -1,7 +1,10 @@
 package login
 
 import (
-	"tat_gogogo/usecase/crawler/portal"
+	"tat_gogogo/domain/repository"
+	"tat_gogogo/domain/service"
+	"tat_gogogo/usecase"
+	"tat_gogogo/utilities/httcli"
 
 	"log"
 
@@ -14,9 +17,13 @@ Controller is a function for gin to handle login api
 func Controller(c *gin.Context) {
 	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
-	client := portal.NewClient()
+	client := httcli.NewClient()
 
-	result, err := portal.Login(client, studentID, password)
+	repo := repository.NewResultRepository()
+	service := service.NewResultService(repo)
+	resultUsecase := usecase.NewResultUsecase(repo, service)
+	result, err := resultUsecase.Login(client, studentID, password)
+
 	if err != nil {
 		log.Panicln("failed to fetch login cookie")
 		c.Status(500)
