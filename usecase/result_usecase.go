@@ -25,6 +25,8 @@ type resultUsecase struct {
 
 /*
 NewResultUsecase init a new result usecase
+@parameter: repository.ResultRepository, *service.ResultService
+@return: *resultUsecase
 */
 func NewResultUsecase(repo repository.ResultRepository, service *service.ResultService) *resultUsecase {
 	return &resultUsecase{repo: repo, service: service}

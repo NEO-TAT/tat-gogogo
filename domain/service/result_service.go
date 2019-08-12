@@ -15,7 +15,7 @@ type ResultService struct {
 }
 
 /*
-NewResultService init a new NewResultService
+NewResultService init a new ResultService
 @parameter: repo repository.ResultRepository
 $return: *ResultService
 */
