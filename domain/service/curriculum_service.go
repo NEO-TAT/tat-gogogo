@@ -70,6 +70,37 @@ func (c *CurriculumService) IsLoginCurriculum() (bool, error) {
 	return isAccessCourse, nil
 }
 
+/*
+GetCurriculumDocument will get curriculum doc from the NewRequest
+@paramter: targetStudentID string
+@return: *goquery.Document, error
+*/
+func (c *CurriculumService) GetCurriculumDocument(targetStudentID string) (*goquery.Document, error) {
+	form := url.Values{
+		"code":   {targetStudentID},
+		"format": {"-3"},
+	}
+	curriculumRequest, err := http.NewRequest("POST", config.CoureseSystem.Select, strings.NewReader(form.Encode()))
+	if err != nil {
+		log.Panicln(err)
+		return nil, err
+	}
+	curriculumRequest.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	curriculumsResp, err := client.Do(curriculumRequest)
+	if err != nil {
+		log.Panicln(err)
+		return nil, err
+	}
+	curriculumDoc, err := goquery.NewDocumentFromReader(curriculumsResp.Body)
+	if err != nil {
+		log.Panicln(err)
+		return nil, err
+	}
+
+	return curriculumDoc, nil
+}
+
 func postSSOLoginCourseSystem() (*goquery.Document, error) {
 	req, err := http.NewRequest("POST", config.Portal.SsoLoginCourseSystem, nil)
 	if err != nil {

@@ -23,7 +23,7 @@ func Controller(c *gin.Context) {
 	repo := repository.NewResultRepository()
 	service := service.NewResultService(repo)
 	resultUsecase := usecase.NewResultUsecase(repo, service)
-	result, err := resultUsecase.Login(client, studentID, password)
+	result, err := resultUsecase.LoginResult(client, studentID, password)
 
 	if err != nil {
 		log.Panicln("failed to fetch login cookie")

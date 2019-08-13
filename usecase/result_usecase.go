@@ -15,7 +15,8 @@ import (
 ResultUsecase contains the functions for result usecase
 */
 type ResultUsecase interface {
-	Login(client *http.Client, studentID string, password string) (loginResult model.Result, err error)
+	LoginResult(client *http.Client, studentID, password string) (loginResult model.Result, err error)
+	CurriculumResultBy(curriculumUsecase CurriculumUsecase, studentID, targetStudentID string) (curriculumResult model.Result, err error)
 }
 
 type resultUsecase struct {
@@ -32,12 +33,28 @@ func NewResultUsecase(repo repository.ResultRepository, service *service.ResultS
 	return &resultUsecase{repo: repo, service: service}
 }
 
-func (r *resultUsecase) Login(client *http.Client, studentID string, password string) (loginResult model.Result, err error) {
+func (r *resultUsecase) LoginResult(client *http.Client, studentID, password string) (loginResult model.Result, err error) {
 	req := newRequest(studentID, password)
 	resp, err := client.Do(req)
 	loginResult = r.repo.GetLoginResultByResponse(resp)
 
 	return loginResult, err
+}
+
+func (r *resultUsecase) CurriculumResultBy(curriculumUsecase CurriculumUsecase, studentID, targetStudentID string) (curriculumResult *model.Result, err error) {
+	if targetStudentID == "" {
+		targetStudentID = studentID
+	}
+
+	doc, err := curriculumUsecase.GetService().GetCurriculumDocument(targetStudentID)
+	if err != nil {
+		log.Panicln(err)
+		return nil, err
+	}
+
+	curriculums := curriculumUsecase.GetRepo().ParseCurriculums(doc)
+
+	return r.repo.GetCurriculumResult(curriculums), nil
 }
 
 func newRequest(studentID string, password string) *http.Request {

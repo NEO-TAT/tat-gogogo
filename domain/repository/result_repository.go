@@ -11,6 +11,7 @@ ResultRepository declare repo of result
 */
 type ResultRepository interface {
 	GetLoginResultByResponse(resp *http.Response) model.Result
+	GetCurriculumResult(cirriculums []model.Curriculum) *model.Result
 }
 
 type resultRepository struct{}
@@ -44,4 +45,8 @@ func (r *resultRepository) GetLoginResultByResponse(resp *http.Response) model.R
 	}
 
 	return *model.NewResult(isSuccess, statusCode, message)
+}
+
+func (r *resultRepository) GetCurriculumResult(curriculums []model.Curriculum) *model.Result {
+	return model.NewResult(true, 201, curriculums)
 }

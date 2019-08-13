@@ -12,7 +12,7 @@ RegisterRoutes is a place to register rotes
 */
 func RegisterRoutes(router *gin.Engine) {
 	router.POST("/login", login.Controller)
-	router.POST("/curriculum/login", curriculum.Controller)
+	router.POST("/curriculums", curriculum.Controller)
 	// router.POST("/curriculums", curriculum.Controller)
 	// router.POST("/curriculums/courses", curriculum.CoursesController)
 }
