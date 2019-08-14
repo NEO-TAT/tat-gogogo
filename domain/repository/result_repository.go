@@ -10,7 +10,7 @@ import (
 ResultRepository declares repo of result
 */
 type ResultRepository interface {
-	GetLoginResultByResponse(resp *http.Response) model.Result
+	GetLoginResultByResponse(resp *http.Response) *model.Result
 	GetCurriculumResult(cirriculums []model.Curriculum) *model.Result
 	GetCurriculumCorseResult(info *model.Info) *model.Result
 	GetNoDataResult() *model.Result
@@ -30,7 +30,7 @@ GetLoginResultByResponse handle response and get login result
 @parameter: *http.Response
 @return: model.result
 */
-func (r *resultRepository) GetLoginResultByResponse(resp *http.Response) model.Result {
+func (r *resultRepository) GetLoginResultByResponse(resp *http.Response) *model.Result {
 	defer resp.Body.Close()
 
 	var data map[string]interface{}
@@ -46,7 +46,7 @@ func (r *resultRepository) GetLoginResultByResponse(resp *http.Response) model.R
 		message = "帳號或密碼錯誤，請重新輸入。"
 	}
 
-	return *model.NewResult(isSuccess, statusCode, message)
+	return model.NewResult(isSuccess, statusCode, message)
 }
 
 /*

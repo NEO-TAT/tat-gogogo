@@ -84,7 +84,7 @@ func (c *controller) login() (*model.Result, error) {
 		return nil, err
 	}
 
-	return &result, nil
+	return result, nil
 }
 
 func (c *controller) loginCurriculum() (bool, error) {
@@ -100,9 +100,5 @@ func (c *controller) getCurriculumResult() (*model.Result, error) {
 	curriculumResultService := service.NewResultService(curriculumResultRepo)
 	curriculumResultUsecase := usecase.NewResultUsecase(curriculumResultRepo, curriculumResultService)
 
-	curriculumRepo := repository.NewCurriculumRepository()
-	curriculumService := service.NewCurriculumService(curriculumRepo)
-	curriculumUsecase := usecase.NewCurriculumUsecase(curriculumRepo, curriculumService)
-
-	return curriculumResultUsecase.CurriculumResultBy(curriculumUsecase, c.studentID, c.targetStudentID)
+	return curriculumResultUsecase.CurriculumResultBy(c.studentID, c.targetStudentID)
 }

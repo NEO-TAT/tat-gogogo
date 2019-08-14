@@ -116,7 +116,7 @@ func (c *controller) login() (*model.Result, error) {
 		return nil, err
 	}
 
-	return &result, nil
+	return result, nil
 }
 
 func (c *controller) loginCurriculum() (bool, error) {
@@ -132,11 +132,7 @@ func (c *controller) getCurriculums() ([]model.Curriculum, error) {
 	curriculumResultService := service.NewResultService(curriculumResultRepo)
 	curriculumResultUsecase := usecase.NewResultUsecase(curriculumResultRepo, curriculumResultService)
 
-	curriculumRepo := repository.NewCurriculumRepository()
-	curriculumService := service.NewCurriculumService(curriculumRepo)
-	curriculumUsecase := usecase.NewCurriculumUsecase(curriculumRepo, curriculumService)
-
-	curriculumRsult, err := curriculumResultUsecase.CurriculumResultBy(curriculumUsecase, c.studentID, c.targetStudentID)
+	curriculumRsult, err := curriculumResultUsecase.CurriculumResultBy(c.studentID, c.targetStudentID)
 	if err != nil {
 		log.Panicln(err)
 		return nil, err
@@ -162,9 +158,5 @@ func (c *controller) getInfoResult() (*model.Result, error) {
 	infoResultService := service.NewResultService(infoResultRepo)
 	infoResultUsecase := usecase.NewResultUsecase(infoResultRepo, infoResultService)
 
-	infoRepo := repository.NewInfoRepository()
-	infoService := service.NewInfoService(infoRepo)
-	infoUsecase := usecase.NewInfoUsecase(infoRepo, infoService)
-
-	return infoResultUsecase.InfoResultBy(infoUsecase, c.studentID, c.targetStudentID, c.year, c.semester)
+	return infoResultUsecase.InfoResultBy(c.studentID, c.targetStudentID, c.year, c.semester)
 }

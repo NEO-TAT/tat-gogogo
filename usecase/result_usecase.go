@@ -13,7 +13,7 @@ import (
 ResultUsecase contains the functions for result usecase
 */
 type ResultUsecase interface {
-	LoginResult(client *http.Client, studentID, password string) (loginResult model.Result, err error)
+	LoginResult(client *http.Client, studentID, password string) (loginResult *model.Result, err error)
 	CurriculumResultBy(curriculumUsecase CurriculumUsecase, studentID, targetStudentID, year, semester string) (curriculumResult model.Result, err error)
 	InfoResultBy(infoUsecase InfoUsecase, studentID, targetStudentID, year, semester string) (curriculumResult model.Result, err error)
 	GetNoDataResult() *model.Result
@@ -33,7 +33,7 @@ func NewResultUsecase(repo repository.ResultRepository, service *service.ResultS
 	return &resultUsecase{repo: repo, service: service}
 }
 
-func (r *resultUsecase) LoginResult(studentID, password string) (loginResult model.Result, err error) {
+func (r *resultUsecase) LoginResult(studentID, password string) (loginResult *model.Result, err error) {
 	req := r.service.NewLoginRequest(studentID, password)
 	client := httcli.GetInstance()
 	resp, err := client.Do(req)
@@ -47,10 +47,14 @@ CurriculumResultBy get curriculum result
 @parameter: CurriculumUsecase, string, string
 @return: *model.Result, error
 */
-func (r *resultUsecase) CurriculumResultBy(curriculumUsecase CurriculumUsecase, studentID, targetStudentID string) (curriculumResult *model.Result, err error) {
+func (r *resultUsecase) CurriculumResultBy(studentID, targetStudentID string) (curriculumResult *model.Result, err error) {
 	if targetStudentID == "" {
 		targetStudentID = studentID
 	}
+
+	curriculumRepo := repository.NewCurriculumRepository()
+	curriculumService := service.NewCurriculumService(curriculumRepo)
+	curriculumUsecase := NewCurriculumUsecase(curriculumRepo, curriculumService)
 
 	curriculums, err := curriculumUsecase.GetCurriculums(targetStudentID)
 	if err != nil {
@@ -66,10 +70,14 @@ InfoResultBy get info result
 @parameter: InfoUsecase, string, string, string, string
 @return: *model.Result, err error
 */
-func (r *resultUsecase) InfoResultBy(infoUsecase InfoUsecase, studentID, targetStudentID, year, semester string) (curriculumResult *model.Result, err error) {
+func (r *resultUsecase) InfoResultBy(studentID, targetStudentID, year, semester string) (curriculumResult *model.Result, err error) {
 	if targetStudentID == "" {
 		targetStudentID = studentID
 	}
+
+	infoRepo := repository.NewInfoRepository()
+	infoService := service.NewInfoService(infoRepo)
+	infoUsecase := NewInfoUsecase(infoRepo, infoService)
 
 	info, err := infoUsecase.GetInfo(targetStudentID, year, semester)
 	if err != nil {
