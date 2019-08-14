@@ -43,8 +43,6 @@ type CurriculumService struct {
 
 /*
 NewCurriculumService init a new CurriculumService
-@paramter: repository.CurriculumRepository)
-@return: *CurriculumService
 */
 func NewCurriculumService(repo repository.CurriculumRepository) *CurriculumService {
 	return &CurriculumService{repo: repo}
@@ -52,7 +50,6 @@ func NewCurriculumService(repo repository.CurriculumRepository) *CurriculumServi
 
 /*
 IsLoginCurriculum judje if curriculum login successful
-@return: bool, error
 */
 func (c *CurriculumService) IsLoginCurriculum() (bool, error) {
 	doc, err := postSSOLoginCourseSystem()
@@ -72,8 +69,6 @@ func (c *CurriculumService) IsLoginCurriculum() (bool, error) {
 
 /*
 GetCurriculumDocument will get curriculum doc from the NewRequest
-@paramter: targetStudentID string
-@return: *goquery.Document, error
 */
 func (c *CurriculumService) GetCurriculumDocument(targetStudentID string) (*goquery.Document, error) {
 	form := url.Values{

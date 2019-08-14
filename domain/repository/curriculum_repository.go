@@ -25,8 +25,6 @@ func NewCurriculumRepository() CurriculumRepository {
 
 /*
 ParseCurriculums parse the curriculum from doc
-@parameter: *goquery.Document
-@return: []model.Curriculum
 */
 func (c *curriculumRepository) ParseCurriculums(doc *goquery.Document) []model.Curriculum {
 	var curriculums []model.Curriculum

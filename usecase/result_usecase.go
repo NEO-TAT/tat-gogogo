@@ -26,8 +26,6 @@ type resultUsecase struct {
 
 /*
 NewResultUsecase init a new result usecase
-@parameter: repository.ResultRepository, *service.ResultService
-@return: *resultUsecase
 */
 func NewResultUsecase(repo repository.ResultRepository, service *service.ResultService) *resultUsecase {
 	return &resultUsecase{repo: repo, service: service}
@@ -44,8 +42,6 @@ func (r *resultUsecase) LoginResult(studentID, password string) (loginResult *mo
 
 /*
 CurriculumResultBy get curriculum result
-@parameter: CurriculumUsecase, string, string
-@return: *model.Result, error
 */
 func (r *resultUsecase) CurriculumResultBy(studentID, targetStudentID string) (curriculumResult *model.Result, err error) {
 	if targetStudentID == "" {
@@ -67,8 +63,6 @@ func (r *resultUsecase) CurriculumResultBy(studentID, targetStudentID string) (c
 
 /*
 InfoResultBy get info result
-@parameter: InfoUsecase, string, string, string, string
-@return: *model.Result, err error
 */
 func (r *resultUsecase) InfoResultBy(studentID, targetStudentID, year, semester string) (curriculumResult *model.Result, err error) {
 	if targetStudentID == "" {
@@ -90,7 +84,6 @@ func (r *resultUsecase) InfoResultBy(studentID, targetStudentID, year, semester 
 
 /*
 GetNoDataResult get no data result
-@return: *model.Result
 */
 func (r *resultUsecase) GetNoDataResult() *model.Result {
 	return model.NewResult(false, 400, "查無該學年或學期資料")

@@ -54,8 +54,6 @@ func NewInfoRepository() InfoRepository {
 
 /*
 GetInfoByRows get info by selection
-@parameter: *goquery.Selection
-@return: *model.Info
 */
 func (i *infoRepository) GetInfoByRows(rows *goquery.Selection) *model.Info {
 	rows.Each(func(rowIndex int, row *goquery.Selection) {

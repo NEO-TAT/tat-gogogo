@@ -11,7 +11,6 @@ var once sync.Once
 
 /*
 GetInstance will get singleton instance
-@returnL: *http.Client
 */
 func GetInstance() *http.Client {
 	client := newClient()

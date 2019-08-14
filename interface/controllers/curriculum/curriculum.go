@@ -19,7 +19,6 @@ type controller struct {
 
 /*
 Controller is a function for gin to handle curriculum api
-@parameter: *gin.Context
 */
 func Controller(c *gin.Context) {
 	studentID := c.PostForm("studentID")

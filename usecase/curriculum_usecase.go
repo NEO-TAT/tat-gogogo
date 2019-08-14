@@ -24,8 +24,6 @@ type curriculumUsecase struct {
 
 /*
 NewCurriculumUsecase init a new curriculum usecase
-@parameter: repository.CurriculumRepository, *service.CurriculumService
-@return: *curriculumUsecase
 */
 func NewCurriculumUsecase(repo repository.CurriculumRepository, service *service.CurriculumService) CurriculumUsecase {
 	return &curriculumUsecase{repo: repo, service: service}
@@ -33,7 +31,6 @@ func NewCurriculumUsecase(repo repository.CurriculumRepository, service *service
 
 /*
 LoginCurriculum login curriculum system
-@return bool, error
 */
 func (c *curriculumUsecase) LoginCurriculum() (bool, error) {
 	return c.service.IsLoginCurriculum()
@@ -41,8 +38,6 @@ func (c *curriculumUsecase) LoginCurriculum() (bool, error) {
 
 /*
 IsSameYearAndSemBy judge is same year and semester
-@parameter: []model.Curriculum, string, string
-@return: bool
 */
 func (c *curriculumUsecase) IsSameYearAndSem(curriculums []model.Curriculum, year, semester string) bool {
 	for _, curriculum := range curriculums {

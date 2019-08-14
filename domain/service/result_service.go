@@ -19,8 +19,6 @@ type ResultService struct {
 
 /*
 NewResultService init a new ResultService
-@parameter: repo repository.ResultRepository
-$return: *ResultService
 */
 func NewResultService(repo repository.ResultRepository) *ResultService {
 	return &ResultService{repo: repo}

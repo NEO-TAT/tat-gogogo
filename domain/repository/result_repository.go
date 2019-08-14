@@ -27,8 +27,6 @@ func NewResultRepository() ResultRepository {
 
 /*
 GetLoginResultByResponse handle response and get login result
-@parameter: *http.Response
-@return: model.result
 */
 func (r *resultRepository) GetLoginResultByResponse(resp *http.Response) *model.Result {
 	defer resp.Body.Close()
@@ -51,8 +49,6 @@ func (r *resultRepository) GetLoginResultByResponse(resp *http.Response) *model.
 
 /*
 GetCurriculumResult get curriculum result by curriculums
-@parameter: []model.Curriculum
-@return: *model.Result
 */
 func (r *resultRepository) GetCurriculumResult(curriculums []model.Curriculum) *model.Result {
 	return model.NewResult(true, 201, curriculums)
@@ -60,8 +56,6 @@ func (r *resultRepository) GetCurriculumResult(curriculums []model.Curriculum) *
 
 /*
 GetCurriculumCorseResult get curriculum course result by info
-@parameter: model.Info
-@return: *model.Result
 */
 func (r *resultRepository) GetCurriculumCorseResult(info *model.Info) *model.Result {
 	return model.NewResult(true, 201, info)
@@ -69,7 +63,6 @@ func (r *resultRepository) GetCurriculumCorseResult(info *model.Info) *model.Res
 
 /*
 GetNoDataResult get no data result
-@return: *model.Result
 */
 func (r *resultRepository) GetNoDataResult() *model.Result {
 	return model.NewResult(false, 400, "查無該學年或學期資料")

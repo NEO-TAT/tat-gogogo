@@ -18,8 +18,6 @@ type InfoService struct {
 
 /*
 NewInfoService init a new InfoService
-@parameter: repo repository.InfoRepository
-$return: *ResultService
 */
 func NewInfoService(repo repository.InfoRepository) *InfoService {
 	return &InfoService{repo: repo}
@@ -27,8 +25,6 @@ func NewInfoService(repo repository.InfoRepository) *InfoService {
 
 /*
 GetInfoRows get ifno rows
-@parameter: string, string, string
-@return: *goquery.Selection, error
 */
 func (i *InfoService) GetInfoRows(studentID, year, semester string) (*goquery.Selection, error) {
 	buffer, err := getCourseSelectResponse(studentID, year, semester)
