@@ -1,22 +1,20 @@
 package usecase
 
 import (
-	"strings"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
 
-	"github.com/PuerkitoBio/goquery"
+	"log"
 )
 
 /*
 CurriculumUsecase contains the functions for curriculum usecase
 */
 type CurriculumUsecase interface {
+	GetCurriculums(targetStudentID string) ([]model.Curriculum, error)
 	LoginCurriculum() (bool, error)
 	IsSameYearAndSem(curriculums []model.Curriculum, year, semester string) bool
-	GetCurriculumDocument(targetStudentID string) (*goquery.Document, error)
-	ParseCurriculums(doc *goquery.Document) []model.Curriculum
 }
 
 type curriculumUsecase struct {
@@ -56,32 +54,13 @@ func (c *curriculumUsecase) IsSameYearAndSem(curriculums []model.Curriculum, yea
 }
 
 /*
-GetCurriculumDocument will get curriculum doc from the NewRequest
-@paramter: targetStudentID string
-@return: *goquery.Document, error
+GetCurriculums get []model.Curriculum
 */
-func (c *curriculumUsecase) GetCurriculumDocument(targetStudentID string) (*goquery.Document, error) {
-	return c.service.GetCurriculumDocument(targetStudentID)
-}
-
-/*
-ParseCurriculums parse the curriculum from doc
-@parameter: *goquery.Document
-@return: []model.Curriculum
-*/
-func (c *curriculumUsecase) ParseCurriculums(doc *goquery.Document) []model.Curriculum {
-	var curriculums []model.Curriculum
-
-	doc.Find("a").Each(func(i int, s *goquery.Selection) {
-		if href, ok := s.Attr("href"); ok {
-			splits := strings.Split(href, "&")
-			year := strings.Replace(splits[2], "year=", "", 1)
-			sem := strings.Replace(splits[3], "sem=", "", 1)
-
-			curriculum := model.Curriculum{Year: year, Semester: sem}
-			curriculums = append(curriculums, curriculum)
-		}
-	})
-
-	return curriculums
+func (c *curriculumUsecase) GetCurriculums(targetStudentID string) ([]model.Curriculum, error) {
+	doc, err := c.service.GetCurriculumDocument(targetStudentID)
+	if err != nil {
+		log.Panicln(err)
+		return nil, err
+	}
+	return c.repo.ParseCurriculums(doc), nil
 }

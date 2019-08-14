@@ -1,19 +1,17 @@
 package usecase
 
 import (
+	"log"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
-
-	"github.com/PuerkitoBio/goquery"
 )
 
 /*
 InfoUsecase contains the functions for info usecase
 */
 type InfoUsecase interface {
-	GetInfoRows(studentID, year, semester string) (*goquery.Selection, error)
-	GetInfoByRows(rows *goquery.Selection) *model.Info
+	GetInfo(studentID, year, semester string) (*model.Info, error)
 }
 
 type infoUsecase struct {
@@ -30,20 +28,11 @@ func NewInfoUsecase(repo repository.InfoRepository, service *service.InfoService
 	return &infoUsecase{repo: repo, service: service}
 }
 
-/*
-GetInfoRows get ifno rows
-@parameter: string, string, string
-@return: *goquery.Selection, error
-*/
-func (i *infoUsecase) GetInfoRows(studentID, year, semester string) (*goquery.Selection, error) {
-	return i.service.GetInfoRows(studentID, year, semester)
-}
-
-/*
-GetInfoByRows get info by selection
-@parameter: *goquery.Selection
-@return: *model.Info
-*/
-func (i *infoUsecase) GetInfoByRows(rows *goquery.Selection) *model.Info {
-	return i.repo.GetInfoByRows(rows)
+func (i *infoUsecase) GetInfo(studentID, year, semester string) (*model.Info, error) {
+	rows, err := i.service.GetInfoRows(studentID, year, semester)
+	if err != nil {
+		log.Panicln(err)
+		return nil, err
+	}
+	return i.repo.GetInfoByRows(rows), nil
 }

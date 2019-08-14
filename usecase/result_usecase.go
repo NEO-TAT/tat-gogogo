@@ -1,14 +1,12 @@
 package usecase
 
 import (
-	"bytes"
 	"log"
 	"net/http"
-	"net/url"
-	"tat_gogogo/configs"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
+	"tat_gogogo/utilities/httcli"
 )
 
 /*
@@ -35,8 +33,9 @@ func NewResultUsecase(repo repository.ResultRepository, service *service.ResultS
 	return &resultUsecase{repo: repo, service: service}
 }
 
-func (r *resultUsecase) LoginResult(client *http.Client, studentID, password string) (loginResult model.Result, err error) {
-	req := newRequest(studentID, password)
+func (r *resultUsecase) LoginResult(studentID, password string) (loginResult model.Result, err error) {
+	req := r.service.NewLoginRequest(studentID, password)
+	client := httcli.GetInstance()
 	resp, err := client.Do(req)
 	loginResult = r.repo.GetLoginResultByResponse(resp)
 
@@ -53,13 +52,11 @@ func (r *resultUsecase) CurriculumResultBy(curriculumUsecase CurriculumUsecase, 
 		targetStudentID = studentID
 	}
 
-	doc, err := curriculumUsecase.GetCurriculumDocument(targetStudentID)
+	curriculums, err := curriculumUsecase.GetCurriculums(targetStudentID)
 	if err != nil {
 		log.Panicln(err)
 		return nil, err
 	}
-
-	curriculums := curriculumUsecase.ParseCurriculums(doc)
 
 	return r.repo.GetCurriculumResult(curriculums), nil
 }
@@ -74,40 +71,13 @@ func (r *resultUsecase) InfoResultBy(infoUsecase InfoUsecase, studentID, targetS
 		targetStudentID = studentID
 	}
 
-	rows, err := infoUsecase.GetInfoRows(targetStudentID, year, semester)
+	info, err := infoUsecase.GetInfo(targetStudentID, year, semester)
 	if err != nil {
 		log.Panicln(err)
 		return nil, err
 	}
 
-	info := infoUsecase.GetInfoByRows(rows)
-
 	return r.repo.GetCurriculumCorseResult(info), nil
-}
-
-func newRequest(studentID string, password string) *http.Request {
-	config, err := configs.New()
-	if err != nil {
-		log.Panicln("failed to new configuration")
-	}
-
-	data := url.Values{
-		"forceMobile": {"mobile"},
-		"mpassword":   {password},
-		"muid":        {studentID},
-	}
-
-	req, err := http.NewRequest("POST", config.Portal.Login, bytes.NewBufferString(data.Encode()))
-
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Referer", config.Portal.IndexPage)
-	req.Header.Set("User-Agent", "Direk Android App")
-
-	return req
 }
 
 /*

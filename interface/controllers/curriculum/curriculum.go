@@ -5,16 +5,13 @@ import (
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
 	"tat_gogogo/usecase"
-	"tat_gogogo/utilities/httcli"
 
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type controller struct {
-	client          *http.Client
 	studentID       string
 	password        string
 	targetStudentID string
@@ -69,12 +66,10 @@ func Controller(c *gin.Context) {
 }
 
 func newController(studentID, password, targetStudentID string) *controller {
-	client := httcli.GetInstance()
 	return &controller{
 		studentID:       studentID,
 		password:        password,
 		targetStudentID: targetStudentID,
-		client:          client,
 	}
 }
 
@@ -83,7 +78,7 @@ func (c *controller) login() (*model.Result, error) {
 	loginResultService := service.NewResultService(loginResultRepo)
 	loginResultUsecase := usecase.NewResultUsecase(loginResultRepo, loginResultService)
 
-	result, err := loginResultUsecase.LoginResult(c.client, c.studentID, c.password)
+	result, err := loginResultUsecase.LoginResult(c.studentID, c.password)
 	if err != nil {
 		log.Panicln(err)
 		return nil, err
