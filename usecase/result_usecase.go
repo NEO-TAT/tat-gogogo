@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"log"
-	"net/http"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
@@ -13,9 +12,9 @@ import (
 ResultUsecase contains the functions for result usecase
 */
 type ResultUsecase interface {
-	LoginResult(client *http.Client, studentID, password string) (loginResult *model.Result, err error)
-	CurriculumResultBy(curriculumUsecase CurriculumUsecase, studentID, targetStudentID, year, semester string) (curriculumResult model.Result, err error)
-	InfoResultBy(infoUsecase InfoUsecase, studentID, targetStudentID, year, semester string) (curriculumResult model.Result, err error)
+	LoginResult(studentID, password string) (loginResult *model.Result, err error)
+	CurriculumResultBy(studentID, targetStudentID string) (curriculumResult *model.Result, err error)
+	InfoResultBy(studentID, targetStudentID, year, semester string) (curriculumResult *model.Result, err error)
 	GetNoDataResult() *model.Result
 }
 
@@ -27,7 +26,7 @@ type resultUsecase struct {
 /*
 NewResultUsecase init a new result usecase
 */
-func NewResultUsecase(repo repository.ResultRepository, service *service.ResultService) *resultUsecase {
+func NewResultUsecase(repo repository.ResultRepository, service *service.ResultService) ResultUsecase {
 	return &resultUsecase{repo: repo, service: service}
 }
 
