@@ -15,11 +15,10 @@ import (
 ResultUsecase contains the functions for result usecase
 */
 type ResultUsecase interface {
-	GetService() *service.ResultService
-	GetRepo() repository.ResultRepository
 	LoginResult(client *http.Client, studentID, password string) (loginResult model.Result, err error)
 	CurriculumResultBy(curriculumUsecase CurriculumUsecase, studentID, targetStudentID, year, semester string) (curriculumResult model.Result, err error)
 	InfoResultBy(infoUsecase InfoUsecase, studentID, targetStudentID, year, semester string) (curriculumResult model.Result, err error)
+	GetNoDataResult() *model.Result
 }
 
 type resultUsecase struct {
@@ -34,20 +33,6 @@ NewResultUsecase init a new result usecase
 */
 func NewResultUsecase(repo repository.ResultRepository, service *service.ResultService) *resultUsecase {
 	return &resultUsecase{repo: repo, service: service}
-}
-
-/*
-GetService get usecase's service
-*/
-func (r *resultUsecase) GetService() *service.ResultService {
-	return r.service
-}
-
-/*
-GetRepo get usecase's repo
-*/
-func (r *resultUsecase) GetRepo() repository.ResultRepository {
-	return r.repo
 }
 
 func (r *resultUsecase) LoginResult(client *http.Client, studentID, password string) (loginResult model.Result, err error) {
@@ -68,13 +53,13 @@ func (r *resultUsecase) CurriculumResultBy(curriculumUsecase CurriculumUsecase, 
 		targetStudentID = studentID
 	}
 
-	doc, err := curriculumUsecase.GetService().GetCurriculumDocument(targetStudentID)
+	doc, err := curriculumUsecase.GetCurriculumDocument(targetStudentID)
 	if err != nil {
 		log.Panicln(err)
 		return nil, err
 	}
 
-	curriculums := curriculumUsecase.GetRepo().ParseCurriculums(doc)
+	curriculums := curriculumUsecase.ParseCurriculums(doc)
 
 	return r.repo.GetCurriculumResult(curriculums), nil
 }
@@ -89,13 +74,13 @@ func (r *resultUsecase) InfoResultBy(infoUsecase InfoUsecase, studentID, targetS
 		targetStudentID = studentID
 	}
 
-	rows, err := infoUsecase.GetService().GetInfoRows(targetStudentID, year, semester)
+	rows, err := infoUsecase.GetInfoRows(targetStudentID, year, semester)
 	if err != nil {
 		log.Panicln(err)
 		return nil, err
 	}
 
-	info := infoUsecase.GetRepo().GetInfoByRows(rows)
+	info := infoUsecase.GetInfoByRows(rows)
 
 	return r.repo.GetCurriculumCorseResult(info), nil
 }
@@ -123,4 +108,12 @@ func newRequest(studentID string, password string) *http.Request {
 	req.Header.Set("User-Agent", "Direk Android App")
 
 	return req
+}
+
+/*
+GetNoDataResult get no data result
+@return: *model.Result
+*/
+func (r *resultUsecase) GetNoDataResult() *model.Result {
+	return model.NewResult(false, 400, "查無該學年或學期資料")
 }

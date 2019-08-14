@@ -107,7 +107,7 @@ func getNoDataResult() *model.Result {
 	resultRepo := repository.NewResultRepository()
 	resultService := service.NewResultService(resultRepo)
 	resultUsecase := usecase.NewResultUsecase(resultRepo, resultService)
-	return resultUsecase.GetRepo().GetNoDataResult()
+	return resultUsecase.GetNoDataResult()
 }
 
 func (c *controller) login() (*model.Result, error) {
