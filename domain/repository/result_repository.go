@@ -7,11 +7,13 @@ import (
 )
 
 /*
-ResultRepository declare repo of result
+ResultRepository declares repo of result
 */
 type ResultRepository interface {
 	GetLoginResultByResponse(resp *http.Response) model.Result
 	GetCurriculumResult(cirriculums []model.Curriculum) *model.Result
+	GetCurriculumCorseResult(info *model.Info) *model.Result
+	GetNoDataResult() *model.Result
 }
 
 type resultRepository struct{}
@@ -47,6 +49,28 @@ func (r *resultRepository) GetLoginResultByResponse(resp *http.Response) model.R
 	return *model.NewResult(isSuccess, statusCode, message)
 }
 
+/*
+GetCurriculumResult get curriculum result by curriculums
+@parameter: []model.Curriculum
+@return: *model.Result
+*/
 func (r *resultRepository) GetCurriculumResult(curriculums []model.Curriculum) *model.Result {
 	return model.NewResult(true, 201, curriculums)
+}
+
+/*
+GetCurriculumCorseResult get curriculum course result by info
+@parameter: model.Info
+@return: *model.Result
+*/
+func (r *resultRepository) GetCurriculumCorseResult(info *model.Info) *model.Result {
+	return model.NewResult(true, 201, info)
+}
+
+/*
+GetNoDataResult get no data result
+@return: *model.Result
+*/
+func (r *resultRepository) GetNoDataResult() *model.Result {
+	return model.NewResult(false, 400, "查無該學年或學期資料")
 }

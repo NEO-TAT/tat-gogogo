@@ -109,10 +109,5 @@ func (c *controller) getCurriculumResult() (*model.Result, error) {
 	curriculumService := service.NewCurriculumService(curriculumRepo)
 	curriculumUsecase := usecase.NewCurriculumUsecase(curriculumRepo, curriculumService)
 
-	result, err := curriculumResultUsecase.CurriculumResultBy(curriculumUsecase, c.studentID, c.targetStudentID)
-	if err != nil {
-		log.Panicln(err)
-		return nil, err
-	}
-	return result, nil
+	return curriculumResultUsecase.CurriculumResultBy(curriculumUsecase, c.studentID, c.targetStudentID)
 }

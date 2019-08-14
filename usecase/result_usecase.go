@@ -15,8 +15,11 @@ import (
 ResultUsecase contains the functions for result usecase
 */
 type ResultUsecase interface {
+	GetService() *service.ResultService
+	GetRepo() repository.ResultRepository
 	LoginResult(client *http.Client, studentID, password string) (loginResult model.Result, err error)
-	CurriculumResultBy(curriculumUsecase CurriculumUsecase, studentID, targetStudentID string) (curriculumResult model.Result, err error)
+	CurriculumResultBy(curriculumUsecase CurriculumUsecase, studentID, targetStudentID, year, semester string) (curriculumResult model.Result, err error)
+	InfoResultBy(infoUsecase InfoUsecase, studentID, targetStudentID, year, semester string) (curriculumResult model.Result, err error)
 }
 
 type resultUsecase struct {
@@ -33,6 +36,20 @@ func NewResultUsecase(repo repository.ResultRepository, service *service.ResultS
 	return &resultUsecase{repo: repo, service: service}
 }
 
+/*
+GetService get usecase's service
+*/
+func (r *resultUsecase) GetService() *service.ResultService {
+	return r.service
+}
+
+/*
+GetRepo get usecase's repo
+*/
+func (r *resultUsecase) GetRepo() repository.ResultRepository {
+	return r.repo
+}
+
 func (r *resultUsecase) LoginResult(client *http.Client, studentID, password string) (loginResult model.Result, err error) {
 	req := newRequest(studentID, password)
 	resp, err := client.Do(req)
@@ -41,6 +58,11 @@ func (r *resultUsecase) LoginResult(client *http.Client, studentID, password str
 	return loginResult, err
 }
 
+/*
+CurriculumResultBy get curriculum result
+@parameter: CurriculumUsecase, string, string
+@return: *model.Result, error
+*/
 func (r *resultUsecase) CurriculumResultBy(curriculumUsecase CurriculumUsecase, studentID, targetStudentID string) (curriculumResult *model.Result, err error) {
 	if targetStudentID == "" {
 		targetStudentID = studentID
@@ -55,6 +77,27 @@ func (r *resultUsecase) CurriculumResultBy(curriculumUsecase CurriculumUsecase, 
 	curriculums := curriculumUsecase.GetRepo().ParseCurriculums(doc)
 
 	return r.repo.GetCurriculumResult(curriculums), nil
+}
+
+/*
+InfoResultBy get info result
+@parameter: InfoUsecase, string, string, string, string
+@return: *model.Result, err error
+*/
+func (r *resultUsecase) InfoResultBy(infoUsecase InfoUsecase, studentID, targetStudentID, year, semester string) (curriculumResult *model.Result, err error) {
+	if targetStudentID == "" {
+		targetStudentID = studentID
+	}
+
+	rows, err := infoUsecase.GetService().GetInfoRows(targetStudentID, year, semester)
+	if err != nil {
+		log.Panicln(err)
+		return nil, err
+	}
+
+	info := infoUsecase.GetRepo().GetInfoByRows(rows)
+
+	return r.repo.GetCurriculumCorseResult(info), nil
 }
 
 func newRequest(studentID string, password string) *http.Request {
