@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type controller struct {
+type handler struct {
 	studentID       string
 	password        string
 	targetStudentID string
@@ -25,9 +25,9 @@ func Controller(c *gin.Context) {
 	password := c.PostForm("password")
 	targetStudentID := c.PostForm("targetStudentID")
 
-	controller := newController(studentID, password, targetStudentID)
+	handler := newHandler(studentID, password, targetStudentID)
 
-	result, err := controller.login()
+	result, err := handler.login()
 	if err != nil {
 		c.Status(500)
 		return
@@ -40,7 +40,7 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	isLoginCurriculumSuccess, err := controller.loginCurriculum()
+	isLoginCurriculumSuccess, err := handler.loginCurriculum()
 	if err != nil {
 		c.Status(500)
 		return
@@ -53,7 +53,7 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	curriculumResult, err := controller.getCurriculumResult()
+	curriculumResult, err := handler.getCurriculumResult()
 	if err != nil {
 		c.Status(500)
 		return
@@ -64,15 +64,15 @@ func Controller(c *gin.Context) {
 	})
 }
 
-func newController(studentID, password, targetStudentID string) *controller {
-	return &controller{
+func newHandler(studentID, password, targetStudentID string) *handler {
+	return &handler{
 		studentID:       studentID,
 		password:        password,
 		targetStudentID: targetStudentID,
 	}
 }
 
-func (c *controller) login() (*model.Result, error) {
+func (c *handler) login() (*model.Result, error) {
 	loginResultRepo := repository.NewResultRepository()
 	loginResultService := service.NewResultService(loginResultRepo)
 	loginResultUsecase := usecase.NewResultUsecase(loginResultRepo, loginResultService)
@@ -86,7 +86,7 @@ func (c *controller) login() (*model.Result, error) {
 	return result, nil
 }
 
-func (c *controller) loginCurriculum() (bool, error) {
+func (c *handler) loginCurriculum() (bool, error) {
 	curriculumRepo := repository.NewCurriculumRepository()
 	curriculumService := service.NewCurriculumService(curriculumRepo)
 	curriculumUsecase := usecase.NewCurriculumUsecase(curriculumRepo, curriculumService)
@@ -94,7 +94,7 @@ func (c *controller) loginCurriculum() (bool, error) {
 	return curriculumUsecase.LoginCurriculum()
 }
 
-func (c *controller) getCurriculumResult() (*model.Result, error) {
+func (c *handler) getCurriculumResult() (*model.Result, error) {
 	curriculumResultRepo := repository.NewResultRepository()
 	curriculumResultService := service.NewResultService(curriculumResultRepo)
 	curriculumResultUsecase := usecase.NewResultUsecase(curriculumResultRepo, curriculumResultService)

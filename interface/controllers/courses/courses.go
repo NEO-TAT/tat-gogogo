@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type controller struct {
+type handler struct {
 	studentID       string
 	password        string
 	targetStudentID string
@@ -30,9 +30,9 @@ func Controller(c *gin.Context) {
 	year := c.PostForm("year")
 	semester := c.PostForm("semester")
 
-	controller := newController(studentID, password, targetStudentID, year, semester)
+	handler := newHandler(studentID, password, targetStudentID, year, semester)
 
-	result, err := controller.login()
+	result, err := handler.login()
 	if err != nil {
 		c.Status(500)
 		return
@@ -45,7 +45,7 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	isLoginCurriculumSuccess, err := controller.loginCurriculum()
+	isLoginCurriculumSuccess, err := handler.loginCurriculum()
 	if err != nil {
 		c.Status(500)
 		return
@@ -58,13 +58,13 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	curriculums, err := controller.getCurriculums()
+	curriculums, err := handler.getCurriculums()
 	if err != nil {
 		c.Status(500)
 		return
 	}
 
-	isSameYearAndSem := controller.isSameYearAndSem(curriculums)
+	isSameYearAndSem := handler.isSameYearAndSem(curriculums)
 
 	if !isSameYearAndSem {
 		result := getNoDataResult()
@@ -74,7 +74,7 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	infoResult, err := controller.getInfoResult()
+	infoResult, err := handler.getInfoResult()
 	if err != nil {
 		log.Panicln(err)
 		c.Status(500)
@@ -87,8 +87,8 @@ func Controller(c *gin.Context) {
 
 }
 
-func newController(studentID, password, targetStudentID, year, semester string) *controller {
-	return &controller{
+func newHandler(studentID, password, targetStudentID, year, semester string) *handler {
+	return &handler{
 		studentID:       studentID,
 		password:        password,
 		targetStudentID: targetStudentID,
@@ -104,7 +104,7 @@ func getNoDataResult() *model.Result {
 	return resultUsecase.GetNoDataResult()
 }
 
-func (c *controller) login() (*model.Result, error) {
+func (c *handler) login() (*model.Result, error) {
 	loginResultRepo := repository.NewResultRepository()
 	loginResultService := service.NewResultService(loginResultRepo)
 	loginResultUsecase := usecase.NewResultUsecase(loginResultRepo, loginResultService)
@@ -118,7 +118,7 @@ func (c *controller) login() (*model.Result, error) {
 	return result, nil
 }
 
-func (c *controller) loginCurriculum() (bool, error) {
+func (c *handler) loginCurriculum() (bool, error) {
 	curriculumRepo := repository.NewCurriculumRepository()
 	curriculumService := service.NewCurriculumService(curriculumRepo)
 	curriculumUsecase := usecase.NewCurriculumUsecase(curriculumRepo, curriculumService)
@@ -126,7 +126,7 @@ func (c *controller) loginCurriculum() (bool, error) {
 	return curriculumUsecase.LoginCurriculum()
 }
 
-func (c *controller) getCurriculums() ([]model.Curriculum, error) {
+func (c *handler) getCurriculums() ([]model.Curriculum, error) {
 	curriculumResultRepo := repository.NewResultRepository()
 	curriculumResultService := service.NewResultService(curriculumResultRepo)
 	curriculumResultUsecase := usecase.NewResultUsecase(curriculumResultRepo, curriculumResultService)
@@ -144,7 +144,7 @@ func (c *controller) getCurriculums() ([]model.Curriculum, error) {
 	return nil, errors.New("failed to cast []model.Curriculum")
 }
 
-func (c *controller) isSameYearAndSem(curriculums []model.Curriculum) bool {
+func (c *handler) isSameYearAndSem(curriculums []model.Curriculum) bool {
 	curriculumRepo := repository.NewCurriculumRepository()
 	curriculumService := service.NewCurriculumService(curriculumRepo)
 	curriculumUsecase := usecase.NewCurriculumUsecase(curriculumRepo, curriculumService)
@@ -152,7 +152,7 @@ func (c *controller) isSameYearAndSem(curriculums []model.Curriculum) bool {
 	return curriculumUsecase.IsSameYearAndSem(curriculums, c.year, c.semester)
 }
 
-func (c *controller) getInfoResult() (*model.Result, error) {
+func (c *handler) getInfoResult() (*model.Result, error) {
 	infoResultRepo := repository.NewResultRepository()
 	infoResultService := service.NewResultService(infoResultRepo)
 	infoResultUsecase := usecase.NewResultUsecase(infoResultRepo, infoResultService)
