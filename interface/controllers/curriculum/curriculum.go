@@ -75,7 +75,7 @@ func newHandler(studentID, password, targetStudentID string) *handler {
 func (c *handler) login() (*model.Result, error) {
 	loginResultRepo := repository.NewResultRepository()
 	loginResultService := service.NewResultService(loginResultRepo)
-	loginResultUsecase := usecase.NewResultUsecase(loginResultRepo, loginResultService)
+	loginResultUsecase := usecase.NewResultUseCase(loginResultRepo, loginResultService)
 
 	result, err := loginResultUsecase.LoginResult(c.studentID, c.password)
 	if err != nil {
@@ -89,7 +89,7 @@ func (c *handler) login() (*model.Result, error) {
 func (c *handler) loginCurriculum() (bool, error) {
 	curriculumRepo := repository.NewCurriculumRepository()
 	curriculumService := service.NewCurriculumService(curriculumRepo)
-	curriculumUsecase := usecase.NewCurriculumUsecase(curriculumRepo, curriculumService)
+	curriculumUsecase := usecase.NewCurriculumUseCase(curriculumRepo, curriculumService)
 
 	return curriculumUsecase.LoginCurriculum()
 }
@@ -97,7 +97,7 @@ func (c *handler) loginCurriculum() (bool, error) {
 func (c *handler) getCurriculumResult() (*model.Result, error) {
 	curriculumResultRepo := repository.NewResultRepository()
 	curriculumResultService := service.NewResultService(curriculumResultRepo)
-	curriculumResultUsecase := usecase.NewResultUsecase(curriculumResultRepo, curriculumResultService)
+	curriculumResultUsecase := usecase.NewResultUseCase(curriculumResultRepo, curriculumResultService)
 
 	return curriculumResultUsecase.CurriculumResultBy(c.studentID, c.targetStudentID)
 }

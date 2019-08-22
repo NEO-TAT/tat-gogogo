@@ -9,9 +9,9 @@ import (
 )
 
 /*
-ResultUsecase contains the functions for result usecase
+ResultUseCase contains the functions for result usecase
 */
-type ResultUsecase interface {
+type ResultUseCase interface {
 	LoginResult(studentID, password string) (loginResult *model.Result, err error)
 	CurriculumResultBy(studentID, targetStudentID string) (curriculumResult *model.Result, err error)
 	InfoResultBy(studentID, targetStudentID, year, semester string) (curriculumResult *model.Result, err error)
@@ -24,9 +24,9 @@ type resultUsecase struct {
 }
 
 /*
-NewResultUsecase init a new result usecase
+NewResultUseCase init a new result usecase
 */
-func NewResultUsecase(repo repository.ResultRepository, service *service.ResultService) ResultUsecase {
+func NewResultUseCase(repo repository.ResultRepository, service *service.ResultService) ResultUseCase {
 	return &resultUsecase{repo: repo, service: service}
 }
 
@@ -49,7 +49,7 @@ func (r *resultUsecase) CurriculumResultBy(studentID, targetStudentID string) (c
 
 	curriculumRepo := repository.NewCurriculumRepository()
 	curriculumService := service.NewCurriculumService(curriculumRepo)
-	curriculumUsecase := NewCurriculumUsecase(curriculumRepo, curriculumService)
+	curriculumUsecase := NewCurriculumUseCase(curriculumRepo, curriculumService)
 
 	curriculums, err := curriculumUsecase.GetCurriculums(targetStudentID)
 	if err != nil {
@@ -70,7 +70,7 @@ func (r *resultUsecase) InfoResultBy(studentID, targetStudentID, year, semester 
 
 	infoRepo := repository.NewInfoRepository()
 	infoService := service.NewInfoService(infoRepo)
-	infoUsecase := NewInfoUsecase(infoRepo, infoService)
+	infoUsecase := NewInfoUseCase(infoRepo, infoService)
 
 	info, err := infoUsecase.GetInfo(targetStudentID, year, semester)
 	if err != nil {
