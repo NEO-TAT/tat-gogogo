@@ -100,14 +100,14 @@ func newHandler(studentID, password, targetStudentID, year, semester string) *ha
 func getNoDataResult() *model.Result {
 	resultRepo := repository.NewResultRepository()
 	resultService := service.NewResultService(resultRepo)
-	resultUsecase := usecase.NewResultUsecase(resultRepo, resultService)
+	resultUsecase := usecase.NewResultUseCase(resultRepo, resultService)
 	return resultUsecase.GetNoDataResult()
 }
 
 func (c *handler) login() (*model.Result, error) {
 	loginResultRepo := repository.NewResultRepository()
 	loginResultService := service.NewResultService(loginResultRepo)
-	loginResultUsecase := usecase.NewResultUsecase(loginResultRepo, loginResultService)
+	loginResultUsecase := usecase.NewResultUseCase(loginResultRepo, loginResultService)
 
 	result, err := loginResultUsecase.LoginResult(c.studentID, c.password)
 	if err != nil {
@@ -121,7 +121,7 @@ func (c *handler) login() (*model.Result, error) {
 func (c *handler) loginCurriculum() (bool, error) {
 	curriculumRepo := repository.NewCurriculumRepository()
 	curriculumService := service.NewCurriculumService(curriculumRepo)
-	curriculumUsecase := usecase.NewCurriculumUsecase(curriculumRepo, curriculumService)
+	curriculumUsecase := usecase.NewCurriculumUseCase(curriculumRepo, curriculumService)
 
 	return curriculumUsecase.LoginCurriculum()
 }
@@ -129,7 +129,7 @@ func (c *handler) loginCurriculum() (bool, error) {
 func (c *handler) getCurriculums() ([]model.Curriculum, error) {
 	curriculumResultRepo := repository.NewResultRepository()
 	curriculumResultService := service.NewResultService(curriculumResultRepo)
-	curriculumResultUsecase := usecase.NewResultUsecase(curriculumResultRepo, curriculumResultService)
+	curriculumResultUsecase := usecase.NewResultUseCase(curriculumResultRepo, curriculumResultService)
 
 	curriculumRsult, err := curriculumResultUsecase.CurriculumResultBy(c.studentID, c.targetStudentID)
 	if err != nil {
@@ -147,7 +147,7 @@ func (c *handler) getCurriculums() ([]model.Curriculum, error) {
 func (c *handler) isSameYearAndSem(curriculums []model.Curriculum) bool {
 	curriculumRepo := repository.NewCurriculumRepository()
 	curriculumService := service.NewCurriculumService(curriculumRepo)
-	curriculumUsecase := usecase.NewCurriculumUsecase(curriculumRepo, curriculumService)
+	curriculumUsecase := usecase.NewCurriculumUseCase(curriculumRepo, curriculumService)
 
 	return curriculumUsecase.IsSameYearAndSem(curriculums, c.year, c.semester)
 }
@@ -155,7 +155,7 @@ func (c *handler) isSameYearAndSem(curriculums []model.Curriculum) bool {
 func (c *handler) getInfoResult() (*model.Result, error) {
 	infoResultRepo := repository.NewResultRepository()
 	infoResultService := service.NewResultService(infoResultRepo)
-	infoResultUsecase := usecase.NewResultUsecase(infoResultRepo, infoResultService)
+	infoResultUsecase := usecase.NewResultUseCase(infoResultRepo, infoResultService)
 
 	return infoResultUsecase.InfoResultBy(c.studentID, c.targetStudentID, c.year, c.semester)
 }

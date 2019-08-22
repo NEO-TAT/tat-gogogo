@@ -19,7 +19,7 @@ func Controller(c *gin.Context) {
 
 	repo := repository.NewResultRepository()
 	service := service.NewResultService(repo)
-	resultUsecase := usecase.NewResultUsecase(repo, service)
+	resultUsecase := usecase.NewResultUseCase(repo, service)
 	result, err := resultUsecase.LoginResult(studentID, password)
 
 	if err != nil {

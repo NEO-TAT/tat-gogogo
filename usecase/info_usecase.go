@@ -8,28 +8,28 @@ import (
 )
 
 /*
-InfoUsecase contains the functions for info usecase
+InfoUseCase contains the functions for info usecase
 */
-type InfoUsecase interface {
+type InfoUseCase interface {
 	GetInfo(studentID, year, semester string) (*model.Info, error)
 }
 
-type infoUsecase struct {
+type infoUseCase struct {
 	repo    repository.InfoRepository
 	service *service.InfoService
 }
 
 /*
-NewInfoUsecase init a new info usecase
+NewInfoUseCase init a new info usecase
 */
-func NewInfoUsecase(repo repository.InfoRepository, service *service.InfoService) InfoUsecase {
-	return &infoUsecase{repo: repo, service: service}
+func NewInfoUseCase(repo repository.InfoRepository, service *service.InfoService) InfoUseCase {
+	return &infoUseCase{repo: repo, service: service}
 }
 
 /*
 GetInfo get info by studentID, year and semester
 */
-func (i *infoUsecase) GetInfo(studentID, year, semester string) (*model.Info, error) {
+func (i *infoUseCase) GetInfo(studentID, year, semester string) (*model.Info, error) {
 	rows, err := i.service.GetInfoRows(studentID, year, semester)
 	if err != nil {
 		log.Panicln(err)
