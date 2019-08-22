@@ -59,9 +59,7 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	c.JSON(curriculumResult.GetStatus(), gin.H{
-		"message": curriculumResult.GetData(),
-	})
+	c.JSON(curriculumResult.GetStatus(), curriculumResult.GetData())
 }
 
 func newHandler(studentID, password, targetStudentID string) *handler {
