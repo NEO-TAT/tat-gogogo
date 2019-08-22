@@ -53,7 +53,7 @@ func Controller(c *gin.Context) {
 
 	if !isLoginCurriculumSuccess {
 		c.JSON(401, gin.H{
-			"message": "failed to login curriculum",
+			"message": "登入課程系統失敗",
 		})
 		return
 	}
@@ -81,9 +81,7 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	c.JSON(infoResult.GetStatus(), gin.H{
-		"message": infoResult.GetData(),
-	})
+	c.JSON(infoResult.GetStatus(), infoResult.GetData())
 
 }
 
