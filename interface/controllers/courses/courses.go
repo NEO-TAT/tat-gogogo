@@ -81,9 +81,7 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	c.JSON(infoResult.GetStatus(), gin.H{
-		"message": infoResult.GetData(),
-	})
+	c.JSON(infoResult.GetStatus(), infoResult.GetData())
 
 }
 
