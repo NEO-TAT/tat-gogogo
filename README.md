@@ -28,5 +28,5 @@ before start contribute this project please make sure taht you are familiar with
 
 ## Contributors
 
-* [jamfly]([https://github.com](https://github.com/)jamfly)
+* [jamfly](https://github.com/jamfly)
 * [yaoandy107](https://github.com/yaoandy107)
