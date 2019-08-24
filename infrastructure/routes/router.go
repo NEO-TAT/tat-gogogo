@@ -2,10 +2,10 @@ package routes
 
 import (
 	"log"
+	"tat_gogogo/infrastructure/middleware"
 	"tat_gogogo/interface/controllers/courses"
 	"tat_gogogo/interface/controllers/curriculum"
 	"tat_gogogo/interface/controllers/login"
-	"tat_gogogo/interface/jwt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +14,7 @@ import (
 RegisterRoutes is a place to register rotes
 */
 func RegisterRoutes(router *gin.Engine) {
-	authMiddleware, err := jwt.AuthMiddleware()
+	authMiddleware, err := middleware.NewAuthMiddleware()
 	if err != nil {
 		log.Panicln(err)
 	}
