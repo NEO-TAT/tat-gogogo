@@ -9,6 +9,7 @@ import (
 
 	"errors"
 
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,11 +25,13 @@ type handler struct {
 Controller is a function for gin to handle courses api
 */
 func Controller(c *gin.Context) {
-	studentID := c.PostForm("studentID")
-	password := c.PostForm("password")
-	targetStudentID := c.PostForm("targetStudentID")
-	year := c.PostForm("year")
-	semester := c.PostForm("semester")
+	targetStudentID := c.Query("targetStudentID")
+	year := c.Query("year")
+	semester := c.Query("semester")
+
+	claims := jwt.ExtractClaims(c)
+	studentID := claims["studentID"].(string)
+	password := claims["password"].(string)
 
 	handler := newHandler(studentID, password, targetStudentID, year, semester)
 
