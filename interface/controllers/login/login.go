@@ -1,11 +1,12 @@
 package login
 
 import (
+	"log"
+
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
+	"tat_gogogo/interface/jwt"
 	"tat_gogogo/usecase"
-
-	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,6 +15,14 @@ import (
 Controller is a function for gin to handle login api
 */
 func Controller(c *gin.Context) {
+
+	authMiddleware, err := jwt.AuthMiddleware()
+	if err != nil {
+		c.Status(500)
+		log.Fatal("JWT Error:" + err.Error())
+
+	}
+
 	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
 
@@ -35,6 +44,5 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	c.Status(200)
-
+	authMiddleware.LoginHandler(c)
 }
