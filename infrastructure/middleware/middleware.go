@@ -1,4 +1,4 @@
-package jwt
+package middleware
 
 import (
 	"time"
@@ -13,9 +13,9 @@ type login struct {
 }
 
 /*
-AuthMiddleware handles jwt middleware
+NewAuthMiddleware handles jwt middleware
 */
-func AuthMiddleware() (*jwt.GinJWTMiddleware, error) {
+func NewAuthMiddleware() (*jwt.GinJWTMiddleware, error) {
 	return jwt.New(&jwt.GinJWTMiddleware{
 		Realm:      "jwt",
 		Key:        []byte("secret key"),

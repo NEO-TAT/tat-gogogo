@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"tat_gogogo/configs"
-	"tat_gogogo/interface/routes"
 	"log"
+	"tat_gogogo/configs"
+	"tat_gogogo/infrastructure/routes"
+
+	"github.com/gin-gonic/gin"
 )
 
 func run() {

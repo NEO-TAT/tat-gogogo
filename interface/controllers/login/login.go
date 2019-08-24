@@ -5,7 +5,7 @@ import (
 
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
-	"tat_gogogo/interface/jwt"
+	"tat_gogogo/infrastructure/middleware"
 	"tat_gogogo/usecase"
 
 	"github.com/gin-gonic/gin"
@@ -16,7 +16,7 @@ Controller is a function for gin to handle login api
 */
 func Controller(c *gin.Context) {
 
-	authMiddleware, err := jwt.AuthMiddleware()
+	authMiddleware, err := middleware.NewAuthMiddleware()
 	if err != nil {
 		c.Status(500)
 		log.Fatal("JWT Error:" + err.Error())
