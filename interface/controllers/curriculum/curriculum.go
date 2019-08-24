@@ -1,12 +1,13 @@
 package curriculum
 
 import (
+	"log"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
 	"tat_gogogo/usecase"
 
-	"log"
+	jwt "github.com/appleboy/gin-jwt/v2"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,9 +22,11 @@ type handler struct {
 Controller is a function for gin to handle curriculum api
 */
 func Controller(c *gin.Context) {
-	studentID := c.PostForm("studentID")
-	password := c.PostForm("password")
-	targetStudentID := c.PostForm("targetStudentID")
+	targetStudentID := c.Query("targetStudentID")
+
+	claims := jwt.ExtractClaims(c)
+	studentID := claims["studentID"].(string)
+	password := claims["password"].(string)
 
 	handler := newHandler(studentID, password, targetStudentID)
 
