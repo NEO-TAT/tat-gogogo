@@ -1,83 +1,88 @@
 package handler
 
 import (
-	"errors"
 	"log"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
+	"tat_gogogo/interface/controller"
 	"tat_gogogo/usecase"
+
+	jwt "github.com/appleboy/gin-jwt/v2"
+	"github.com/gin-gonic/gin"
 )
 
-type coursesHandler struct {
-	studentID       string
-	password        string
-	targetStudentID string
-	year            string
-	semester        string
-}
-
 /*
-CoursesHandler handle courses
+CoursesHandler is a function for gin to handle courses api
 */
-type CoursesHandler interface {
-	GetCurriculums() ([]model.Curriculum, error)
-	IsSameYearAndSem(curriculums []model.Curriculum) bool
-	GetInfoResult() (*model.Result, error)
-}
+func CoursesHandler(c *gin.Context) {
+	targetStudentID := c.Query("targetStudentID")
+	year := c.Query("year")
+	semester := c.Query("semester")
 
-/*
-NewCoursesHandler get a new CoursesHandler
-*/
-func NewCoursesHandler(studentID, password, targetStudentID, year, semester string) CoursesHandler {
-	return &coursesHandler{
-		studentID:       studentID,
-		password:        password,
-		targetStudentID: targetStudentID,
-		year:            year,
-		semester:        semester,
+	claims := jwt.ExtractClaims(c)
+	studentID := claims["studentID"].(string)
+	password := claims["password"].(string)
+
+	loginController := controller.NewLoginController(studentID, password)
+	courseController := controller.NewCoursesController(studentID, password, targetStudentID, year, semester)
+
+	result, err := loginController.Login()
+	if err != nil {
+		c.Status(500)
+		return
 	}
-}
 
-/*
-GetCurriculums get curriculum
-*/
-func (c *coursesHandler) GetCurriculums() ([]model.Curriculum, error) {
-	curriculumResultRepo := repository.NewResultRepository()
-	curriculumResultService := service.NewResultService(curriculumResultRepo)
-	curriculumResultUsecase := usecase.NewResultUseCase(curriculumResultRepo, curriculumResultService)
+	if !result.GetSuccess() {
+		c.JSON(401, gin.H{
+			"message": result.GetData(),
+		})
+		return
+	}
 
-	curriculumRsult, err := curriculumResultUsecase.CurriculumResultBy(c.studentID, c.targetStudentID)
+	isLoginCurriculumSuccess, err := loginController.LoginCurriculum()
+	if err != nil {
+		c.Status(500)
+		return
+	}
+
+	if !isLoginCurriculumSuccess {
+		c.JSON(401, gin.H{
+			"message": "登入課程系統失敗",
+		})
+		return
+	}
+
+	curriculums, err := courseController.GetCurriculums()
+	if err != nil {
+		c.Status(500)
+		return
+	}
+
+	isSameYearAndSem := courseController.IsSameYearAndSem(curriculums)
+
+	if !isSameYearAndSem {
+		result := getNoDataResult()
+		c.JSON(result.GetStatus(), gin.H{
+			"message": result.GetData(),
+		})
+		return
+	}
+
+	infoResult, err := courseController.GetInfoResult()
 	if err != nil {
 		log.Panicln(err)
-		return nil, err
+		c.Status(500)
+		return
 	}
 
-	if curriculums, ok := curriculumRsult.GetData().([]model.Curriculum); ok {
-		return curriculums, nil
-	}
+	c.JSON(infoResult.GetStatus(), infoResult.GetData())
 
-	return nil, errors.New("failed to cast []model.Curriculum")
 }
 
-/*
-IsSameYearAndSem judge is the same year and semester
-*/
-func (c *coursesHandler) IsSameYearAndSem(curriculums []model.Curriculum) bool {
-	curriculumRepo := repository.NewCurriculumRepository()
-	curriculumService := service.NewCurriculumService(curriculumRepo)
-	curriculumUsecase := usecase.NewCurriculumUseCase(curriculumRepo, curriculumService)
-
-	return curriculumUsecase.IsSameYearAndSem(curriculums, c.year, c.semester)
-}
-
-/*
-GetInfoResult get info result
-*/
-func (c *coursesHandler) GetInfoResult() (*model.Result, error) {
-	infoResultRepo := repository.NewResultRepository()
-	infoResultService := service.NewResultService(infoResultRepo)
-	infoResultUsecase := usecase.NewResultUseCase(infoResultRepo, infoResultService)
-
-	return infoResultUsecase.InfoResultBy(c.studentID, c.targetStudentID, c.year, c.semester)
+func getNoDataResult() *model.Result {
+	resultRepo := repository.NewResultRepository()
+	resultService := service.NewResultService(resultRepo)
+	resultUsecase := usecase.NewResultUseCase(resultRepo, resultService)
+	return resultUsecase.GetNoDataResult()
 }
