@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"tat_gogogo/configs"
-	"tat_gogogo/infrastructure/routes"
+	"tat_gogogo/infrastructure/router"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +19,7 @@ func run() {
 
 	httpServer = gin.Default()
 
-	routes.RegisterRoutes(httpServer)
+	router.RegisterRouter(httpServer)
 
 	serverAddr := configuration.Constants.Host + ":" + configuration.Constants.Port
 
