@@ -1,43 +1,57 @@
 package handler
 
 import (
-	"tat_gogogo/domain/model"
-	"tat_gogogo/domain/repository"
-	"tat_gogogo/domain/service"
-	"tat_gogogo/usecase"
+	"tat_gogogo/interface/controller"
+
+	jwt "github.com/appleboy/gin-jwt/v2"
+
+	"github.com/gin-gonic/gin"
 )
 
-type curriculumHandler struct {
-	studentID       string
-	password        string
-	targetStudentID string
-}
-
 /*
-CurriculumHandler handle curriculum flow
+CurriculumHandler is a function for gin to handle curriculum api
 */
-type CurriculumHandler interface {
-	GetCurriculumResult() (*model.Result, error)
-}
+func CurriculumHandler(c *gin.Context) {
+	targetStudentID := c.Query("targetStudentID")
 
-/*
-NewCurriculumHandler get a new CurriculumHandler
-*/
-func NewCurriculumHandler(studentID, password, targetStudentID string) CurriculumHandler {
-	return &curriculumHandler{
-		studentID:       studentID,
-		password:        password,
-		targetStudentID: targetStudentID,
+	claims := jwt.ExtractClaims(c)
+	studentID := claims["studentID"].(string)
+	password := claims["password"].(string)
+
+	loginController := controller.NewLoginController(studentID, password)
+	curriculumController := controller.NewCurriculumController(studentID, password, targetStudentID)
+
+	result, err := loginController.Login()
+	if err != nil {
+		c.Status(500)
+		return
 	}
-}
 
-/*
-GetCurriculumResult get curriculum
-*/
-func (c *curriculumHandler) GetCurriculumResult() (*model.Result, error) {
-	curriculumResultRepo := repository.NewResultRepository()
-	curriculumResultService := service.NewResultService(curriculumResultRepo)
-	curriculumResultUsecase := usecase.NewResultUseCase(curriculumResultRepo, curriculumResultService)
+	if !result.GetSuccess() {
+		c.JSON(401, gin.H{
+			"message": result.GetData(),
+		})
+		return
+	}
 
-	return curriculumResultUsecase.CurriculumResultBy(c.studentID, c.targetStudentID)
+	isLoginCurriculumSuccess, err := loginController.LoginCurriculum()
+	if err != nil {
+		c.Status(500)
+		return
+	}
+
+	if !isLoginCurriculumSuccess {
+		c.JSON(401, gin.H{
+			"message": "登入課程系統失敗",
+		})
+		return
+	}
+
+	curriculumResult, err := curriculumController.GetCurriculumResult()
+	if err != nil {
+		c.Status(500)
+		return
+	}
+
+	c.JSON(curriculumResult.GetStatus(), curriculumResult.GetData())
 }
