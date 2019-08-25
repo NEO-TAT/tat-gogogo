@@ -9,9 +9,9 @@ import (
 )
 
 /*
-RegisterRouter is a place to register rotes
+Register is a place to register rotes
 */
-func RegisterRouter(router *gin.Engine) {
+func Register(router *gin.Engine) {
 	authMiddleware, err := middleware.NewAuthMiddleware()
 	if err != nil {
 		log.Panicln(err)

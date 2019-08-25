@@ -19,7 +19,7 @@ func run() {
 
 	httpServer = gin.Default()
 
-	router.RegisterRouter(httpServer)
+	router.Register(httpServer)
 
 	serverAddr := configuration.Constants.Host + ":" + configuration.Constants.Port
 
