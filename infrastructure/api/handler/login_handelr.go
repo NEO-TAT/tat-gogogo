@@ -1,18 +1,18 @@
-package login
+package handler
 
 import (
 	"log"
 
-	"tat_gogogo/infrastructure/api/handler"
 	"tat_gogogo/infrastructure/middleware"
+	"tat_gogogo/interface/controller"
 
 	"github.com/gin-gonic/gin"
 )
 
 /*
-Controller is a function for gin to handle login api
+LoginHandler is a function for gin to handle login api
 */
-func Controller(c *gin.Context) {
+func LoginHandler(c *gin.Context) {
 	authMiddleware, err := middleware.NewAuthMiddleware()
 	if err != nil {
 		c.Status(500)
@@ -23,8 +23,8 @@ func Controller(c *gin.Context) {
 	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
 
-	loginHandler := handler.NewLoginHanlder(studentID, password)
-	result, err := loginHandler.Login()
+	loginController := controller.NewLoginController(studentID, password)
+	result, err := loginController.Login()
 
 	if err != nil {
 		log.Panicln("failed to fetch login cookie")

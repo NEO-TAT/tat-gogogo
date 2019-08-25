@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"log"
@@ -8,24 +8,24 @@ import (
 	"tat_gogogo/usecase"
 )
 
-type loginHandler struct {
+type loginController struct {
 	studentID string
 	password  string
 }
 
 /*
-LoginHandler handle login related task
+LoginController handle login related task
 */
-type LoginHandler interface {
+type LoginController interface {
 	Login() (*model.Result, error)
 	LoginCurriculum() (bool, error)
 }
 
 /*
-NewLoginHanlder get a new LoginHandler
+NewLoginController get a new LoginHandler
 */
-func NewLoginHanlder(studentID, password string) LoginHandler {
-	return &loginHandler{
+func NewLoginController(studentID, password string) LoginController {
+	return &loginController{
 		studentID: studentID,
 		password:  password,
 	}
@@ -34,7 +34,7 @@ func NewLoginHanlder(studentID, password string) LoginHandler {
 /*
 Login will login the school system
 */
-func (c *loginHandler) Login() (*model.Result, error) {
+func (c *loginController) Login() (*model.Result, error) {
 	loginResultRepo := repository.NewResultRepository()
 	loginResultService := service.NewResultService(loginResultRepo)
 	loginResultUsecase := usecase.NewResultUseCase(loginResultRepo, loginResultService)
@@ -51,7 +51,7 @@ func (c *loginHandler) Login() (*model.Result, error) {
 /*
 LoginCurriculum will login school curriculum system
 */
-func (c *loginHandler) LoginCurriculum() (bool, error) {
+func (c *loginController) LoginCurriculum() (bool, error) {
 	curriculumRepo := repository.NewCurriculumRepository()
 	curriculumService := service.NewCurriculumService(curriculumRepo)
 	curriculumUsecase := usecase.NewCurriculumUseCase(curriculumRepo, curriculumService)
