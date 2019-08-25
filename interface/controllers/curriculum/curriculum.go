@@ -18,9 +18,10 @@ func Controller(c *gin.Context) {
 	studentID := claims["studentID"].(string)
 	password := claims["password"].(string)
 
-	handler := handler.NewCurriculumHandler(studentID, password, targetStudentID)
+	loginHandler := handler.NewLoginHanlder(studentID, password)
+	curriculumHandler := handler.NewCurriculumHandler(studentID, password, targetStudentID)
 
-	result, err := handler.Login()
+	result, err := loginHandler.Login()
 	if err != nil {
 		c.Status(500)
 		return
@@ -33,7 +34,7 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	isLoginCurriculumSuccess, err := handler.LoginCurriculum()
+	isLoginCurriculumSuccess, err := loginHandler.LoginCurriculum()
 	if err != nil {
 		c.Status(500)
 		return
@@ -46,7 +47,7 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	curriculumResult, err := handler.GetCurriculumResult()
+	curriculumResult, err := curriculumHandler.GetCurriculumResult()
 	if err != nil {
 		c.Status(500)
 		return

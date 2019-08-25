@@ -3,10 +3,8 @@ package login
 import (
 	"log"
 
-	"tat_gogogo/domain/repository"
-	"tat_gogogo/domain/service"
+	"tat_gogogo/infrastructure/api/handler"
 	"tat_gogogo/infrastructure/middleware"
-	"tat_gogogo/usecase"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +13,6 @@ import (
 Controller is a function for gin to handle login api
 */
 func Controller(c *gin.Context) {
-
 	authMiddleware, err := middleware.NewAuthMiddleware()
 	if err != nil {
 		c.Status(500)
@@ -26,10 +23,8 @@ func Controller(c *gin.Context) {
 	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
 
-	repo := repository.NewResultRepository()
-	service := service.NewResultService(repo)
-	resultUsecase := usecase.NewResultUseCase(repo, service)
-	result, err := resultUsecase.LoginResult(studentID, password)
+	loginHandler := handler.NewLoginHanlder(studentID, password)
+	result, err := loginHandler.Login()
 
 	if err != nil {
 		log.Panicln("failed to fetch login cookie")

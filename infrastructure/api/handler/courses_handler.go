@@ -21,8 +21,6 @@ type coursesHandler struct {
 CoursesHandler handle courses
 */
 type CoursesHandler interface {
-	Login() (*model.Result, error)
-	LoginCurriculum() (bool, error)
 	GetCurriculums() ([]model.Curriculum, error)
 	IsSameYearAndSem(curriculums []model.Curriculum) bool
 	GetInfoResult() (*model.Result, error)
@@ -39,34 +37,6 @@ func NewCoursesHandler(studentID, password, targetStudentID, year, semester stri
 		year:            year,
 		semester:        semester,
 	}
-}
-
-/*
-Login will login the school system
-*/
-func (c *coursesHandler) Login() (*model.Result, error) {
-	loginResultRepo := repository.NewResultRepository()
-	loginResultService := service.NewResultService(loginResultRepo)
-	loginResultUsecase := usecase.NewResultUseCase(loginResultRepo, loginResultService)
-
-	result, err := loginResultUsecase.LoginResult(c.studentID, c.password)
-	if err != nil {
-		log.Panicln(err)
-		return nil, err
-	}
-
-	return result, nil
-}
-
-/*
-LoginCurriculum will login school curriculum system
-*/
-func (c *coursesHandler) LoginCurriculum() (bool, error) {
-	curriculumRepo := repository.NewCurriculumRepository()
-	curriculumService := service.NewCurriculumService(curriculumRepo)
-	curriculumUsecase := usecase.NewCurriculumUseCase(curriculumRepo, curriculumService)
-
-	return curriculumUsecase.LoginCurriculum()
 }
 
 /*

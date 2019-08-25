@@ -24,9 +24,10 @@ func Controller(c *gin.Context) {
 	studentID := claims["studentID"].(string)
 	password := claims["password"].(string)
 
-	handler := handler.NewCoursesHandler(studentID, password, targetStudentID, year, semester)
+	loginHandler := handler.NewLoginHanlder(studentID, password)
+	courseHandler := handler.NewCoursesHandler(studentID, password, targetStudentID, year, semester)
 
-	result, err := handler.Login()
+	result, err := loginHandler.Login()
 	if err != nil {
 		c.Status(500)
 		return
@@ -39,7 +40,7 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	isLoginCurriculumSuccess, err := handler.LoginCurriculum()
+	isLoginCurriculumSuccess, err := loginHandler.LoginCurriculum()
 	if err != nil {
 		c.Status(500)
 		return
@@ -52,13 +53,13 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	curriculums, err := handler.GetCurriculums()
+	curriculums, err := courseHandler.GetCurriculums()
 	if err != nil {
 		c.Status(500)
 		return
 	}
 
-	isSameYearAndSem := handler.IsSameYearAndSem(curriculums)
+	isSameYearAndSem := courseHandler.IsSameYearAndSem(curriculums)
 
 	if !isSameYearAndSem {
 		result := getNoDataResult()
@@ -68,7 +69,7 @@ func Controller(c *gin.Context) {
 		return
 	}
 
-	infoResult, err := handler.GetInfoResult()
+	infoResult, err := courseHandler.GetInfoResult()
 	if err != nil {
 		log.Panicln(err)
 		c.Status(500)
