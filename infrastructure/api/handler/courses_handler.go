@@ -17,6 +17,9 @@ type coursesHandler struct {
 	semester        string
 }
 
+/*
+CoursesHandler handle courses
+*/
 type CoursesHandler interface {
 	Login() (*model.Result, error)
 	LoginCurriculum() (bool, error)
@@ -25,6 +28,9 @@ type CoursesHandler interface {
 	GetInfoResult() (*model.Result, error)
 }
 
+/*
+NewCoursesHandler get a new CoursesHandler
+*/
 func NewCoursesHandler(studentID, password, targetStudentID, year, semester string) CoursesHandler {
 	return &coursesHandler{
 		studentID:       studentID,
@@ -35,7 +41,9 @@ func NewCoursesHandler(studentID, password, targetStudentID, year, semester stri
 	}
 }
 
-
+/*
+Login will login the school system
+*/
 func (c *coursesHandler) Login() (*model.Result, error) {
 	loginResultRepo := repository.NewResultRepository()
 	loginResultService := service.NewResultService(loginResultRepo)
@@ -50,6 +58,9 @@ func (c *coursesHandler) Login() (*model.Result, error) {
 	return result, nil
 }
 
+/*
+LoginCurriculum will login school curriculum system
+*/
 func (c *coursesHandler) LoginCurriculum() (bool, error) {
 	curriculumRepo := repository.NewCurriculumRepository()
 	curriculumService := service.NewCurriculumService(curriculumRepo)
@@ -58,6 +69,9 @@ func (c *coursesHandler) LoginCurriculum() (bool, error) {
 	return curriculumUsecase.LoginCurriculum()
 }
 
+/*
+GetCurriculums get curriculum
+*/
 func (c *coursesHandler) GetCurriculums() ([]model.Curriculum, error) {
 	curriculumResultRepo := repository.NewResultRepository()
 	curriculumResultService := service.NewResultService(curriculumResultRepo)
@@ -76,6 +90,9 @@ func (c *coursesHandler) GetCurriculums() ([]model.Curriculum, error) {
 	return nil, errors.New("failed to cast []model.Curriculum")
 }
 
+/*
+IsSameYearAndSem judge is the same year and semester
+*/
 func (c *coursesHandler) IsSameYearAndSem(curriculums []model.Curriculum) bool {
 	curriculumRepo := repository.NewCurriculumRepository()
 	curriculumService := service.NewCurriculumService(curriculumRepo)
@@ -84,6 +101,9 @@ func (c *coursesHandler) IsSameYearAndSem(curriculums []model.Curriculum) bool {
 	return curriculumUsecase.IsSameYearAndSem(curriculums, c.year, c.semester)
 }
 
+/*
+GetInfoResult get info result
+*/
 func (c *coursesHandler) GetInfoResult() (*model.Result, error) {
 	infoResultRepo := repository.NewResultRepository()
 	infoResultService := service.NewResultService(infoResultRepo)
