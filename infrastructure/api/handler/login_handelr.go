@@ -15,9 +15,8 @@ LoginHandler is a function for gin to handle login api
 func LoginHandler(c *gin.Context) {
 	authMiddleware, err := middleware.NewAuthMiddleware()
 	if err != nil {
+		log.Printf("JWT Error:" + err.Error())
 		c.Status(500)
-		log.Fatal("JWT Error:" + err.Error())
-
 	}
 
 	studentID := c.PostForm("studentID")
@@ -27,7 +26,7 @@ func LoginHandler(c *gin.Context) {
 	result, err := loginController.Login()
 
 	if err != nil {
-		log.Panicln("failed to fetch login cookie")
+		log.Printf("failed to fetch login cookie")
 		c.Status(500)
 		return
 	}
