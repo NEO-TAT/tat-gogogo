@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"tat_gogogo/configs"
-	"tat_gogogo/interface/routes"
 	"log"
+	"tat_gogogo/configs"
+	"tat_gogogo/infrastructure/router"
+
+	"github.com/gin-gonic/gin"
 )
 
 func run() {
@@ -18,7 +19,7 @@ func run() {
 
 	httpServer = gin.Default()
 
-	routes.RegisterRoutes(httpServer)
+	router.Register(httpServer)
 
 	serverAddr := configuration.Constants.Host + ":" + configuration.Constants.Port
 
