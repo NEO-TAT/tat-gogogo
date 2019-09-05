@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"runtime/debug"
-	"tat_gogogo/service"
+	"tat_gogogo/app/service"
 )
 
 func main() {

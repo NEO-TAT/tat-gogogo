@@ -16,7 +16,7 @@ configInit is init load config.
 */
 func configInit() {
 	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
+	viper.AddConfigPath("..")
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic("Fatal error config file: " + err.Error())

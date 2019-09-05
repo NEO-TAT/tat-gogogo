@@ -27,12 +27,12 @@ func LogInit() {
 	logLevel := viper.GetInt("log.level")
 	file := viper.GetBool("log.output")
 	times := time.Now().UTC().Format("2006-01-02")
-	os.MkdirAll("log", os.ModePerm)
+	os.MkdirAll("../log", os.ModePerm)
 	// -----------------------------------------------
-	defaultPath := fmt.Sprintf("./log/Default_%s.log", times)
-	errorPath := fmt.Sprintf("./log/Error_%s.log", times)
-	warningPath := fmt.Sprintf("./log/Warning_%s.log", times)
-	infoPath := fmt.Sprintf("./log/Info_%s.log", times)
+	defaultPath := fmt.Sprintf("../log/Default_%s.log", times)
+	errorPath := fmt.Sprintf("../log/Error_%s.log", times)
+	warningPath := fmt.Sprintf("../log/Warning_%s.log", times)
+	infoPath := fmt.Sprintf("../log/Info_%s.log", times)
 	// -----------------------------------------------
 	if viper.GetBool("log.print") {
 		output["defaultPath"] = append(output["defaultPath"], os.Stderr)
