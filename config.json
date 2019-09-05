@@ -1,5 +1,5 @@
 {
-  "PORT": "8080",
+  "PORT": "8081",
   "HOST": "0.0.0.0",
   "PORTAL": {
     "BASE": "https://app.ntut.edu.tw/",
@@ -14,5 +14,12 @@
     "BASE": "https://aps.ntut.edu.tw/course/tw/",
     "MainPage": "https://aps.ntut.edu.tw/course/tw/courseSID.jsp",
     "Select": "https://aps.ntut.edu.tw/course/tw/Select.jsp"
+  },
+  "log": {
+    "level": 3,
+    "default_log": true,
+    "output": true,
+    "print": true,
+    "default_log": true
   }
 }
