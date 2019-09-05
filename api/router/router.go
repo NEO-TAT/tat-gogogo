@@ -17,6 +17,8 @@ func Register(router *gin.Engine) {
 		logs.Error.Panicln(err)
 	}
 
+	// -----------------------------------------------[API List]
+
 	router.POST("/login", handler.LoginHandler)
 
 	auth := router.Group("/auth")

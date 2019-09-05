@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"fmt"
-
 	"tat_gogogo/api/middleware"
 	"tat_gogogo/glob/logs"
 	"tat_gogogo/interface/controller"
@@ -23,21 +21,19 @@ func LoginHandler(c *gin.Context) {
 	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
 
-	fmt.Println("password", password)
-	fmt.Println("studentID", studentID)
-
 	loginController := controller.NewLoginController(studentID, password)
 	result, err := loginController.Login()
-
 	if err != nil {
-		logs.Warning.Printf("failed to fetch login cookie")
+		logs.Warning.Printf("LogIn failed:", studentID)
 		c.Status(500)
 		return
 	}
 
 	if result.GetStatus() != 200 {
+		message := result.GetData()
+		logs.Info.Println(message, "FROM", studentID)
 		c.JSON(result.GetStatus(), gin.H{
-			"message": result.GetData(),
+			"message": message,
 		})
 		return
 	}

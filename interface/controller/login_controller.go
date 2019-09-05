@@ -41,7 +41,7 @@ func (c *loginController) Login() (*model.Result, error) {
 
 	result, err := loginResultUsecase.LoginResult(c.studentID, c.password)
 	if err != nil {
-		logs.Error.Panicln(err)
+		logs.Warning.Println(err)
 		return nil, err
 	}
 
