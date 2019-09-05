@@ -10,12 +10,12 @@ import (
 )
 
 func Start() {
-	// Init
+	// -----------------------------------------------[Init]
 	configInit()
 	logs.LogInit()
-	// Server Start
+	// -----------------------------------------------[Server Start]
 	go serviceStart()
-	// Server Safe Stop
+	// -----------------------------------------------[Server Safe Stop]
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, os.Kill, syscall.SIGTERM)
 	for {
