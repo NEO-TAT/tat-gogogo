@@ -9,6 +9,9 @@ import (
 	"github.com/spf13/viper"
 )
 
+/*
+Start is init system after server start then wait stop signal.
+*/
 func Start() {
 	// -----------------------------------------------[Init]
 	configInit()
@@ -27,12 +30,11 @@ func Start() {
 	}
 }
 
+/*
+serviceStart is create gin engine and running.
+*/
+
 func serviceStart() {
 	router := ginInit()
 	logs.Error.Panicln(router.Run(":" + viper.GetString("PORT")))
 }
-
-// router.RunTLS(
-// 	":"+viper.GetInt("PORT"),
-// 	"./SSL/server.crt",
-// "./SSL/server.key",)

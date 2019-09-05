@@ -18,6 +18,9 @@ var (
 	Error   *log.Logger
 )
 
+/*
+LogInit is init Log file and register componert.
+*/
 func LogInit() {
 	// ----------------------------------------------
 	output := map[string][]io.Writer{}

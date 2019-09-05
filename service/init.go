@@ -11,6 +11,9 @@ import (
 	"github.com/spf13/viper"
 )
 
+/*
+configInit is init load config.
+*/
 func configInit() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
@@ -20,6 +23,9 @@ func configInit() {
 	}
 }
 
+/*
+ginInit is create gin engine and register middleware.
+*/
 func ginInit() *gin.Engine {
 	ginRouter := gin.Default()
 	// -----------------------------------------------[Middleware]
