@@ -12,6 +12,7 @@ import (
 func Start() {
 	// Init
 	configInit()
+	logs.LogInit()
 	// Server Start
 	go serviceStart()
 	// Server Safe Stop
