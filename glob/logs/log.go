@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"tat_gogogo/glob/signal"
 	"time"
 
 	"github.com/spf13/viper"
@@ -77,4 +78,6 @@ func LogInit() {
 		Info = log.New(io.MultiWriter(output["info"]...), "【Info】 ", log.Ldate|log.Ltime|log.Lshortfile)
 	}
 	// -----------------------------------------------
+	signal.LogSignal = make(chan bool)
+	signal.LogSignal <- true
 }

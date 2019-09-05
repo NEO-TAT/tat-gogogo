@@ -12,7 +12,7 @@ import (
 func Start() {
 	// -----------------------------------------------[Init]
 	configInit()
-	logs.LogInit()
+	go logs.LogInit()
 	// -----------------------------------------------[Server Start]
 	go serviceStart()
 	// -----------------------------------------------[Server Safe Stop]
@@ -21,6 +21,7 @@ func Start() {
 	for {
 		select {
 		case <-stop:
+			close()
 			panic(nil)
 		}
 	}
