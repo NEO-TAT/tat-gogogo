@@ -4,8 +4,7 @@ import (
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
-
-	"log"
+	"tat_gogogo/glob/logs"
 )
 
 /*
@@ -54,7 +53,7 @@ GetCurriculums get []model.Curriculum
 func (c *curriculumUseCase) GetCurriculums(targetStudentID string) ([]model.Curriculum, error) {
 	doc, err := c.service.GetCurriculumDocument(targetStudentID)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 	return c.repo.ParseCurriculums(doc), nil

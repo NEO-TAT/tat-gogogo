@@ -2,10 +2,10 @@ package controller
 
 import (
 	"errors"
-	"log"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
+	"tat_gogogo/glob/logs"
 	"tat_gogogo/usecase"
 )
 
@@ -49,7 +49,7 @@ func (c *coursesController) GetCurriculums() ([]model.Curriculum, error) {
 
 	curriculumRsult, err := curriculumResultUsecase.CurriculumResultBy(c.studentID, c.targetStudentID)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 

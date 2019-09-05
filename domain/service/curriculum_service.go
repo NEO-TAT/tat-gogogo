@@ -1,23 +1,23 @@
 package service
 
 import (
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
-	"tat_gogogo/configs"
+
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
+	"tat_gogogo/glob/logs"
 	"tat_gogogo/utilities/decoder"
 	"tat_gogogo/utilities/httcli"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/spf13/viper"
 )
 
 var (
-	config, configError = configs.New()
-	client              = httcli.GetInstance()
-	columnMap           = map[int]string{
+	client    = httcli.GetInstance()
+	columnMap = map[int]string{
 		0:  "id",
 		1:  "name",
 		6:  "instructor",
@@ -54,13 +54,13 @@ IsLoginCurriculum judje if curriculum login successful
 func (c *CurriculumService) IsLoginCurriculum() (bool, error) {
 	doc, err := postSSOLoginCourseSystem()
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return false, err
 	}
 
 	isAccessCourse, err := isAccessCourse(doc)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return false, err
 	}
 
@@ -75,21 +75,24 @@ func (c *CurriculumService) GetCurriculumDocument(targetStudentID string) (*goqu
 		"code":   {targetStudentID},
 		"format": {"-3"},
 	}
-	curriculumRequest, err := http.NewRequest("POST", config.CoureseSystem.Select, strings.NewReader(form.Encode()))
+	curriculumRequest, err := http.NewRequest(
+		"POST",
+		viper.GetString("COURESESYSTEM.Select"),
+		strings.NewReader(form.Encode()))
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 	curriculumRequest.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	curriculumsResp, err := client.Do(curriculumRequest)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 	curriculumDoc, err := goquery.NewDocumentFromReader(curriculumsResp.Body)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 
@@ -97,21 +100,24 @@ func (c *CurriculumService) GetCurriculumDocument(targetStudentID string) (*goqu
 }
 
 func postSSOLoginCourseSystem() (*goquery.Document, error) {
-	req, err := http.NewRequest("POST", config.Portal.SsoLoginCourseSystem, nil)
+	req, err := http.NewRequest(
+		"POST",
+		viper.GetString("Portal.SsoLoginCourseSystem"),
+		nil)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 
@@ -121,9 +127,12 @@ func postSSOLoginCourseSystem() (*goquery.Document, error) {
 func isAccessCourse(doc *goquery.Document) (bool, error) {
 	form := parseFormBy(doc)
 
-	bufferRequest, err := http.NewRequest("POST", config.CoureseSystem.MainPage, strings.NewReader(form.Encode()))
+	bufferRequest, err := http.NewRequest(
+		"POST",
+		viper.GetString("COURESESYSTEM.MainPage"),
+		strings.NewReader(form.Encode()))
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return false, err
 	}
 
@@ -131,7 +140,7 @@ func isAccessCourse(doc *goquery.Document) (bool, error) {
 
 	buffer, err := client.Do(bufferRequest)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return false, err
 	}
 
@@ -154,14 +163,14 @@ func isLoginCurriculumSuccess(buffer *http.Response) (bool, error) {
 
 	courseDoc, err := goquery.NewDocumentFromReader(buffer.Body)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return false, err
 	}
 
 	rawLast := courseDoc.Find("body a").Last().Text()
 	last, err := decoder.DecodeToBig5(rawLast)
 	if err != nil {
-		log.Println(err)
+		logs.Error.Println(err)
 		return false, err
 	}
 

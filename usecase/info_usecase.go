@@ -1,10 +1,10 @@
 package usecase
 
 import (
-	"log"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
+	"tat_gogogo/glob/logs"
 )
 
 /*
@@ -32,7 +32,7 @@ GetInfo get info by studentID, year and semester
 func (i *infoUseCase) GetInfo(studentID, year, semester string) (*model.Info, error) {
 	rows, err := i.service.GetInfoRows(studentID, year, semester)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 	return i.repo.GetInfoByRows(rows), nil

@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"log"
+	"fmt"
 
-	"tat_gogogo/infrastructure/middleware"
+	"tat_gogogo/api/middleware"
+	"tat_gogogo/glob/logs"
 	"tat_gogogo/interface/controller"
 
 	"github.com/gin-gonic/gin"
@@ -15,18 +16,21 @@ LoginHandler is a function for gin to handle login api
 func LoginHandler(c *gin.Context) {
 	authMiddleware, err := middleware.NewAuthMiddleware()
 	if err != nil {
-		log.Printf("JWT Error:" + err.Error())
+		logs.Warning.Printf("JWT Error:" + err.Error())
 		c.Status(500)
 	}
 
 	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
 
+	fmt.Println("password", password)
+	fmt.Println("studentID", studentID)
+
 	loginController := controller.NewLoginController(studentID, password)
 	result, err := loginController.Login()
 
 	if err != nil {
-		log.Printf("failed to fetch login cookie")
+		logs.Warning.Printf("failed to fetch login cookie")
 		c.Status(500)
 		return
 	}

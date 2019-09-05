@@ -2,6 +2,7 @@ package service
 
 import (
 	"os"
+	"tat_gogogo/api/router"
 	"tat_gogogo/glob/logs"
 
 	"github.com/gin-contrib/cors"
@@ -20,20 +21,22 @@ func configInit() {
 }
 
 func ginInit() *gin.Engine {
-	router := gin.Default()
+	ginRouter := gin.Default()
 	CORS := cors.DefaultConfig()
 	CORS.AllowAllOrigins = true
 	CORS.AllowCredentials = true
 	CORS.AllowWebSockets = true
-	router.Use(cors.New(CORS))
-	pprof.Register(router)
+	ginRouter.Use(cors.New(CORS))
+	pprof.Register(ginRouter)
 	// -----------------------------------------------[Log]
 	logFile, err := os.Create("./log/restful_server.log")
 	if err != nil {
 		logs.Warning.Println(err)
 	} else {
-		router.Use(gin.LoggerWithWriter(logFile))
+		ginRouter.Use(gin.LoggerWithWriter(logFile))
 	}
-	// -----------------------------------------------[return]
-	return router
+	// -----------------------------------------------[Register]
+	router.Register(ginRouter)
+	// -----------------------------------------------[Return]
+	return ginRouter
 }

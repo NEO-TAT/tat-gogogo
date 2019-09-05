@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"log"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
+	"tat_gogogo/glob/logs"
 	"tat_gogogo/usecase"
 )
 
@@ -41,7 +41,7 @@ func (c *loginController) Login() (*model.Result, error) {
 
 	result, err := loginResultUsecase.LoginResult(c.studentID, c.password)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 
