@@ -3,7 +3,7 @@ package repository
 import (
 	"strings"
 	"tat_gogogo/domain/model"
-	"tat_gogogo/glob/logs"
+	"tat_gogogo/utilities/logs"
 	"tat_gogogo/utilities/arrutil"
 	"tat_gogogo/utilities/decoder"
 

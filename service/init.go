@@ -2,8 +2,8 @@ package service
 
 import (
 	"os"
-	"tat_gogogo/api/router"
-	"tat_gogogo/glob/logs"
+	"tat_gogogo/infrastructure/router"
+	"tat_gogogo/utilities/logs"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/pprof"

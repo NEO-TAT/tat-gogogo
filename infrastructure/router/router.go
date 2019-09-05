@@ -1,9 +1,9 @@
 package router
 
 import (
-	"tat_gogogo/api/handler"
-	"tat_gogogo/api/middleware"
-	"tat_gogogo/glob/logs"
+	"tat_gogogo/infrastructure/api/handler"
+	"tat_gogogo/infrastructure/middleware"
+	"tat_gogogo/utilities/logs"
 
 	"github.com/gin-gonic/gin"
 )

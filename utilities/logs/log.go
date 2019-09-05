@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"tat_gogogo/glob/signal"
+	"tat_gogogo/utilities/signal"
 	"time"
 
 	"github.com/spf13/viper"

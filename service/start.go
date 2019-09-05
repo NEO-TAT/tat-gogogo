@@ -4,7 +4,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"tat_gogogo/glob/logs"
+	"tat_gogogo/utilities/logs"
 
 	"github.com/spf13/viper"
 )

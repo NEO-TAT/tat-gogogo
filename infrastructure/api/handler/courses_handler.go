@@ -4,7 +4,7 @@ import (
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
-	"tat_gogogo/glob/logs"
+	"tat_gogogo/utilities/logs"
 	"tat_gogogo/interface/controller"
 	"tat_gogogo/usecase"
 

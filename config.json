@@ -1,5 +1,5 @@
 {
-  "PORT": "8081",
+  "PORT": "8080",
   "HOST": "0.0.0.0",
   "PORTAL": {
     "BASE": "https://app.ntut.edu.tw/",

@@ -3,7 +3,7 @@ package service
 import (
 	"net/http"
 	"tat_gogogo/domain/repository"
-	"tat_gogogo/glob/logs"
+	"tat_gogogo/utilities/logs"
 	"tat_gogogo/utilities/httcli"
 
 	"github.com/PuerkitoBio/goquery"

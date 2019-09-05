@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"tat_gogogo/api/middleware"
-	"tat_gogogo/glob/logs"
+	"tat_gogogo/infrastructure/middleware"
+	"tat_gogogo/utilities/logs"
 	"tat_gogogo/interface/controller"
 
 	"github.com/gin-gonic/gin"

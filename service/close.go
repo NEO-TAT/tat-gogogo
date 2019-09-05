@@ -1,6 +1,6 @@
 package service
 
-import "tat_gogogo/glob/signal"
+import "tat_gogogo/utilities/signal"
 
 func close() {
 	closeLog()

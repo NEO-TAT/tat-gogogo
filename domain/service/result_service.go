@@ -6,7 +6,7 @@ import (
 	"net/url"
 
 	"tat_gogogo/domain/repository"
-	"tat_gogogo/glob/logs"
+	"tat_gogogo/utilities/logs"
 
 	"github.com/spf13/viper"
 )
