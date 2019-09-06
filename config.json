@@ -17,7 +17,6 @@
   },
   "log": {
     "level": 3,
-    "default_log": true,
     "output": true,
     "print": true,
     "default_log": true
