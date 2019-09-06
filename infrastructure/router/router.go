@@ -1,9 +1,9 @@
 package router
 
 import (
-	"log"
 	"tat_gogogo/infrastructure/api/handler"
 	"tat_gogogo/infrastructure/middleware"
+	"tat_gogogo/utilities/logs"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,8 +14,10 @@ Register is a place to register rotes
 func Register(router *gin.Engine) {
 	authMiddleware, err := middleware.NewAuthMiddleware()
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 	}
+
+	// -----------------------------------------------[API List]
 
 	router.POST("/login", handler.LoginHandler)
 

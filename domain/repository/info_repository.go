@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"log"
 	"strings"
 	"tat_gogogo/domain/model"
+	"tat_gogogo/utilities/logs"
 	"tat_gogogo/utilities/arrutil"
 	"tat_gogogo/utilities/decoder"
 
@@ -144,19 +144,19 @@ func handleInstructorAndClassroom(
 		case "instructor":
 			big5Instructor, err := decoder.DecodeToBig5(el.Text())
 			if err != nil {
-				log.Panicln(err)
+				logs.Error.Panicln(err)
 				break
 			}
 			course.Instructor = append(course.Instructor, strings.TrimSpace(big5Instructor))
 		case "classroom":
 			big5Classroom, err := decoder.DecodeToBig5(el.Text())
 			if err != nil {
-				log.Panicln(err)
+				logs.Error.Panicln(err)
 				break
 			}
 			course.Classroom = append(course.Classroom, strings.TrimSpace(big5Classroom))
 		default:
-			log.Println("beyond the map", columnMap[columnIndex])
+			logs.Error.Println("beyond the map", columnMap[columnIndex])
 		}
 	})
 }
@@ -170,19 +170,19 @@ func handleIDAndName(
 	case "id":
 		big5Id, err := decoder.DecodeToBig5(element.Text())
 		if err != nil {
-			log.Panicln(err)
+			logs.Error.Panicln(err)
 			break
 		}
 		course.ID = strings.TrimSpace(big5Id)
 	case "name":
 		big5Name, err := decoder.DecodeToBig5(element.Text())
 		if err != nil {
-			log.Panicln(err)
+			logs.Error.Panicln(err)
 			break
 		}
 		course.Name = strings.TrimSpace(big5Name)
 	default:
-		log.Println("beyond the map", columnMap[columnIndex])
+		logs.Error.Println("beyond the map", columnMap[columnIndex])
 	}
 }
 

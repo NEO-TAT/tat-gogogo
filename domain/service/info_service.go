@@ -1,12 +1,13 @@
 package service
 
 import (
-	"log"
 	"net/http"
 	"tat_gogogo/domain/repository"
+	"tat_gogogo/utilities/logs"
 	"tat_gogogo/utilities/httcli"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/spf13/viper"
 )
 
 /*
@@ -36,7 +37,7 @@ func (i *InfoService) GetInfoRows(studentID, year, semester string) (*goquery.Se
 
 	courseDoc, err := goquery.NewDocumentFromReader(buffer.Body)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 
@@ -44,9 +45,12 @@ func (i *InfoService) GetInfoRows(studentID, year, semester string) (*goquery.Se
 }
 
 func getCourseSelectResponse(studentID, year, semester string) (buffer *http.Response, err error) {
-	bufferReq, err := http.NewRequest("GET", config.CoureseSystem.Select, nil)
+	bufferReq, err := http.NewRequest(
+		"GET",
+		viper.GetString("COURESESYSTEM.Select"),
+		nil)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 
@@ -64,7 +68,7 @@ func getCourseSelectResponse(studentID, year, semester string) (buffer *http.Res
 
 	buffer, err = client.Do(bufferReq)
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		return nil, err
 	}
 

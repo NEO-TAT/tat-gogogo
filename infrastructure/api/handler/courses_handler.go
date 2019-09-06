@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"log"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
+	"tat_gogogo/utilities/logs"
 	"tat_gogogo/interface/controller"
 	"tat_gogogo/usecase"
 
@@ -29,6 +29,7 @@ func CoursesHandler(c *gin.Context) {
 
 	result, err := loginController.Login()
 	if err != nil {
+		logs.Warning.Println("LonIn failed：", studentID)
 		c.Status(500)
 		return
 	}
@@ -71,7 +72,7 @@ func CoursesHandler(c *gin.Context) {
 
 	infoResult, err := courseController.GetInfoResult()
 	if err != nil {
-		log.Panicln(err)
+		logs.Error.Panicln(err)
 		c.Status(500)
 		return
 	}

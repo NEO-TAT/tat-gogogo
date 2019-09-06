@@ -14,5 +14,11 @@
     "BASE": "https://aps.ntut.edu.tw/course/tw/",
     "MainPage": "https://aps.ntut.edu.tw/course/tw/courseSID.jsp",
     "Select": "https://aps.ntut.edu.tw/course/tw/Select.jsp"
+  },
+  "log": {
+    "level": 3,
+    "output": true,
+    "print": true,
+    "default_log": true
   }
 }
