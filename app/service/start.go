@@ -13,12 +13,12 @@ import (
 Start is init system after server start then wait stop signal.
 */
 func Start() {
-	// -----------------------------------------------[Init]
 	configInit()
+
 	go logs.LogInit()
-	// -----------------------------------------------[Server Start]
+
 	go serviceStart()
-	// -----------------------------------------------[Server Safe Stop]
+
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, os.Kill, syscall.SIGTERM)
 	for {

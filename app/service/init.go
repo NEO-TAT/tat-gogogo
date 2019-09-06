@@ -28,24 +28,22 @@ ginInit is create gin engine and register middleware.
 */
 func ginInit() *gin.Engine {
 	ginRouter := gin.Default()
-	// -----------------------------------------------[Middleware]
-	// ------------------------------------------[CORS]
+
 	CORS := cors.DefaultConfig()
 	CORS.AllowAllOrigins = true
 	CORS.AllowCredentials = true
 	CORS.AllowWebSockets = true
 	ginRouter.Use(cors.New(CORS))
-	// -----------------------------------------[pprof]
+
 	pprof.Register(ginRouter)
-	// -----------------------------------------------[Log]
+
 	logFile, err := os.Create("./log/restful_server.log")
 	if err != nil {
 		logs.Warning.Println(err)
 	} else {
 		ginRouter.Use(gin.LoggerWithWriter(logFile))
 	}
-	// -----------------------------------------------[Register]
 	router.Register(ginRouter)
-	// -----------------------------------------------[Return]
+
 	return ginRouter
 }
