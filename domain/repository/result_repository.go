@@ -51,14 +51,14 @@ func (r *resultRepository) GetLoginResultByResponse(resp *http.Response) *model.
 GetCurriculumResult get curriculum result by curriculums
 */
 func (r *resultRepository) GetCurriculumResult(curriculums []model.Curriculum) *model.Result {
-	return model.NewResult(true, 201, curriculums)
+	return model.NewResult(true, 200, curriculums)
 }
 
 /*
 GetCurriculumCorseResult get curriculum course result by info
 */
 func (r *resultRepository) GetCurriculumCorseResult(info *model.Info) *model.Result {
-	return model.NewResult(true, 201, info)
+	return model.NewResult(true, 200, info)
 }
 
 /*
