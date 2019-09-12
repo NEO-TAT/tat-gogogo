@@ -22,7 +22,6 @@ func Register(router *gin.Engine) {
 	auth := router.Group("/auth")
 	auth.Use(authMiddleware.MiddlewareFunc())
 	{
-		auth.GET("/refresh-token", authMiddleware.RefreshHandler)
 		auth.GET("/curriculums/semesters", handler.CurriculumHandler)
 		auth.GET("/curriculums/courses", handler.CoursesHandler)
 	}
