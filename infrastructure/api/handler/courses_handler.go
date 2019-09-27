@@ -2,11 +2,7 @@ package handler
 
 import (
 	"log"
-	"tat_gogogo/domain/model"
-	"tat_gogogo/domain/repository"
-	"tat_gogogo/domain/service"
 	"tat_gogogo/interface/controller"
-	"tat_gogogo/usecase"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
@@ -62,7 +58,7 @@ func CoursesHandler(c *gin.Context) {
 	isSameYearAndSem := courseController.IsSameYearAndSem(curriculums)
 
 	if !isSameYearAndSem {
-		result := getNoDataResult()
+		result := courseController.GetNoDataResult()
 		c.JSON(result.GetStatus(), gin.H{
 			"message": result.GetData(),
 		})
@@ -78,11 +74,4 @@ func CoursesHandler(c *gin.Context) {
 
 	c.JSON(infoResult.GetStatus(), infoResult.GetData())
 
-}
-
-func getNoDataResult() *model.Result {
-	resultRepo := repository.NewResultRepository()
-	resultService := service.NewResultService(resultRepo)
-	resultUsecase := usecase.NewResultUseCase(resultRepo, resultService)
-	return resultUsecase.GetNoDataResult()
 }

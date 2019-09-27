@@ -3,8 +3,8 @@ package controller
 import (
 	"errors"
 	"log"
+	"tat_gogogo/data/crawler/repository"
 	"tat_gogogo/domain/model"
-	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
 	"tat_gogogo/usecase"
 )
@@ -24,6 +24,7 @@ type CoursesController interface {
 	GetCurriculums() ([]model.Curriculum, error)
 	IsSameYearAndSem(curriculums []model.Curriculum) bool
 	GetInfoResult() (*model.Result, error)
+	GetNoDataResult() *model.Result
 }
 
 /*
@@ -44,8 +45,16 @@ GetCurriculums get curriculum
 */
 func (c *coursesController) GetCurriculums() ([]model.Curriculum, error) {
 	curriculumResultRepo := repository.NewResultRepository()
+	curriculumRepo := repository.NewCurriculumRepository()
+	infoRepo := repository.NewInfoRepository()
+
 	curriculumResultService := service.NewResultService(curriculumResultRepo)
-	curriculumResultUsecase := usecase.NewResultUseCase(curriculumResultRepo, curriculumResultService)
+	curriculumResultUsecase := usecase.NewResultUseCase(
+		curriculumResultRepo,
+		curriculumRepo,
+		infoRepo,
+		curriculumResultService,
+	)
 
 	curriculumRsult, err := curriculumResultUsecase.CurriculumResultBy(c.studentID, c.targetStudentID)
 	if err != nil {
@@ -75,9 +84,31 @@ func (c *coursesController) IsSameYearAndSem(curriculums []model.Curriculum) boo
 GetInfoResult get info result
 */
 func (c *coursesController) GetInfoResult() (*model.Result, error) {
-	infoResultRepo := repository.NewResultRepository()
-	infoResultService := service.NewResultService(infoResultRepo)
-	infoResultUsecase := usecase.NewResultUseCase(infoResultRepo, infoResultService)
+	resultRepo := repository.NewResultRepository()
+	curriculumRepo := repository.NewCurriculumRepository()
+	infoRepo := repository.NewInfoRepository()
+
+	infoResultService := service.NewResultService(resultRepo)
+	infoResultUsecase := usecase.NewResultUseCase(
+		resultRepo,
+		curriculumRepo,
+		infoRepo,
+		infoResultService,
+	)
 
 	return infoResultUsecase.InfoResultBy(c.studentID, c.targetStudentID, c.year, c.semester)
+}
+
+func (c *coursesController) GetNoDataResult() *model.Result {
+	resultRepo := repository.NewResultRepository()
+	curriculumRepo := repository.NewCurriculumRepository()
+	infoRepo := repository.NewInfoRepository()
+
+	resultService := service.NewResultService(resultRepo)
+	resultUsecase := usecase.NewResultUseCase(
+		resultRepo,
+		curriculumRepo,
+		infoRepo,
+		resultService)
+	return resultUsecase.GetNoDataResult()
 }

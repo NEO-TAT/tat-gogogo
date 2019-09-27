@@ -1,9 +1,10 @@
-package crawler
+package repository
 
 import (
 	"strings"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
+
 	"github.com/PuerkitoBio/goquery"
 )
 

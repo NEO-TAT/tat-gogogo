@@ -1,8 +1,8 @@
 package controller
 
 import (
+	"tat_gogogo/data/crawler/repository"
 	"tat_gogogo/domain/model"
-	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
 	"tat_gogogo/usecase"
 )
@@ -35,9 +35,17 @@ func NewCurriculumController(studentID, password, targetStudentID string) Curric
 GetCurriculumResult get curriculum
 */
 func (c *curriculumController) GetCurriculumResult() (*model.Result, error) {
-	curriculumResultRepo := repository.NewResultRepository()
-	curriculumResultService := service.NewResultService(curriculumResultRepo)
-	curriculumResultUsecase := usecase.NewResultUseCase(curriculumResultRepo, curriculumResultService)
+	resultRepo := repository.NewResultRepository()
+	curriculumRepo := repository.NewCurriculumRepository()
+	infoRepo := repository.NewInfoRepository()
+
+	curriculumResultService := service.NewResultService(resultRepo)
+	curriculumResultUsecase := usecase.NewResultUseCase(
+		resultRepo,
+		curriculumRepo,
+		infoRepo,
+		curriculumResultService,
+	)
 
 	return curriculumResultUsecase.CurriculumResultBy(c.studentID, c.targetStudentID)
 }

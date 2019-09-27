@@ -15,15 +15,15 @@ type InfoUseCase interface {
 }
 
 type infoUseCase struct {
-	repo    repository.InfoRepository
-	service *service.InfoService
+	infoRepo repository.InfoRepository
+	service  *service.InfoService
 }
 
 /*
 NewInfoUseCase init a new info usecase
 */
-func NewInfoUseCase(repo repository.InfoRepository, service *service.InfoService) InfoUseCase {
-	return &infoUseCase{repo: repo, service: service}
+func NewInfoUseCase(infoRepo repository.InfoRepository, service *service.InfoService) InfoUseCase {
+	return &infoUseCase{infoRepo: infoRepo, service: service}
 }
 
 /*
@@ -35,5 +35,5 @@ func (i *infoUseCase) GetInfo(studentID, year, semester string) (*model.Info, er
 		log.Panicln(err)
 		return nil, err
 	}
-	return i.repo.GetInfoByRows(rows), nil
+	return i.infoRepo.GetInfoByRows(rows), nil
 }

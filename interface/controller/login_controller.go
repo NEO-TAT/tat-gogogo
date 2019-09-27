@@ -2,8 +2,8 @@ package controller
 
 import (
 	"log"
+	"tat_gogogo/data/crawler/repository"
 	"tat_gogogo/domain/model"
-	"tat_gogogo/domain/repository"
 	"tat_gogogo/domain/service"
 	"tat_gogogo/usecase"
 )
@@ -35,9 +35,16 @@ func NewLoginController(studentID, password string) LoginController {
 Login will login the school system
 */
 func (c *loginController) Login() (*model.Result, error) {
-	loginResultRepo := repository.NewResultRepository()
-	loginResultService := service.NewResultService(loginResultRepo)
-	loginResultUsecase := usecase.NewResultUseCase(loginResultRepo, loginResultService)
+	resultRepo := repository.NewResultRepository()
+	curriculumRepo := repository.NewCurriculumRepository()
+	infoRepo := repository.NewInfoRepository()
+
+	loginResultService := service.NewResultService(resultRepo)
+	loginResultUsecase := usecase.NewResultUseCase(
+		resultRepo,
+		curriculumRepo,
+		infoRepo,
+		loginResultService)
 
 	result, err := loginResultUsecase.LoginResult(c.studentID, c.password)
 	if err != nil {
