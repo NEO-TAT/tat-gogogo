@@ -5,7 +5,7 @@ import (
 	"log"
 	"tat_gogogo/data/crawler/repository"
 	"tat_gogogo/domain/model"
-	"tat_gogogo/domain/service"
+	"tat_gogogo/data/crawler/service"
 	"tat_gogogo/usecase"
 )
 

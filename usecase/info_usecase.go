@@ -2,9 +2,9 @@ package usecase
 
 import (
 	"log"
+	"tat_gogogo/data/crawler/service"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
-	"tat_gogogo/domain/service"
 )
 
 /*

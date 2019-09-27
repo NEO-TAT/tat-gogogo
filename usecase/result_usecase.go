@@ -2,9 +2,9 @@ package usecase
 
 import (
 	"log"
+	"tat_gogogo/data/crawler/service"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
-	"tat_gogogo/domain/service"
 	"tat_gogogo/utilities/httcli"
 )
 
@@ -19,26 +19,26 @@ type ResultUseCase interface {
 }
 
 type resultUsecase struct {
-	resultRepo    	repository.ResultRepository
-	curriculumRepo 	repository.CurriculumRepository
-	infoRepo 				repository.InfoRepository
-	service 				*service.ResultService
+	resultRepo     repository.ResultRepository
+	curriculumRepo repository.CurriculumRepository
+	infoRepo       repository.InfoRepository
+	service        *service.ResultService
 }
 
 /*
 NewResultUseCase init a new result usecase
 */
 func NewResultUseCase(
-	resultRepo repository.ResultRepository, 
-	curriculumRepo repository.CurriculumRepository, 
+	resultRepo repository.ResultRepository,
+	curriculumRepo repository.CurriculumRepository,
 	infoRepo repository.InfoRepository,
 	service *service.ResultService,
-	) ResultUseCase {
+) ResultUseCase {
 	return &resultUsecase{
-		resultRepo: resultRepo,
+		resultRepo:     resultRepo,
 		curriculumRepo: curriculumRepo,
-		infoRepo: infoRepo,
-		service: service,
+		infoRepo:       infoRepo,
+		service:        service,
 	}
 }
 
