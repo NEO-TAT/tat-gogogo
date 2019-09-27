@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"tat_gogogo/interface/controller"
+	"tat_gogogo/di"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 
@@ -18,10 +18,10 @@ func CurriculumHandler(c *gin.Context) {
 	studentID := claims["studentID"].(string)
 	password := claims["password"].(string)
 
-	loginController := controller.NewLoginController(studentID, password)
-	curriculumController := controller.NewCurriculumController(studentID, password, targetStudentID)
+	loginController := di.InjectLoginController()
+	curriculumController := di.InjectCurriculumController()
 
-	result, err := loginController.Login()
+	result, err := loginController.Login(studentID, password)
 	if err != nil {
 		c.Status(500)
 		return
@@ -47,7 +47,7 @@ func CurriculumHandler(c *gin.Context) {
 		return
 	}
 
-	curriculumResult, err := curriculumController.GetCurriculumResult()
+	curriculumResult, err := curriculumController.GetCurriculumResult(studentID, targetStudentID)
 	if err != nil {
 		c.Status(500)
 		return

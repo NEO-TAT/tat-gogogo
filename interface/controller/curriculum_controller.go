@@ -1,51 +1,33 @@
 package controller
 
 import (
-	"tat_gogogo/data/crawler/repository"
-	"tat_gogogo/data/crawler/service"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/usecase"
 )
 
 type curriculumController struct {
-	studentID       string
-	password        string
-	targetStudentID string
+	resultUseCase usecase.ResultUseCase
 }
 
 /*
 CurriculumController handle curriculum flow
 */
 type CurriculumController interface {
-	GetCurriculumResult() (*model.Result, error)
+	GetCurriculumResult(studentID, targetStudentID string) (*model.Result, error)
 }
 
 /*
 NewCurriculumController get a new CurriculumController
 */
-func NewCurriculumController(studentID, password, targetStudentID string) CurriculumController {
+func NewCurriculumController(resultUseCase usecase.ResultUseCase) CurriculumController {
 	return &curriculumController{
-		studentID:       studentID,
-		password:        password,
-		targetStudentID: targetStudentID,
+		resultUseCase: resultUseCase,
 	}
 }
 
 /*
 GetCurriculumResult get curriculum
 */
-func (c *curriculumController) GetCurriculumResult() (*model.Result, error) {
-	resultRepo := repository.NewResultRepository()
-	curriculumRepo := repository.NewCurriculumRepository()
-	infoRepo := repository.NewInfoRepository()
-
-	curriculumResultService := service.NewResultService(resultRepo)
-	curriculumResultUsecase := usecase.NewResultUseCase(
-		resultRepo,
-		curriculumRepo,
-		infoRepo,
-		curriculumResultService,
-	)
-
-	return curriculumResultUsecase.CurriculumResultBy(c.studentID, c.targetStudentID)
+func (c *curriculumController) GetCurriculumResult(studentID, targetStudentID string) (*model.Result, error) {
+	return c.resultUseCase.CurriculumResultBy(studentID, targetStudentID)
 }
