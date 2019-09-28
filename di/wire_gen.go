@@ -8,9 +8,9 @@ package di
 import (
 	"github.com/google/wire"
 	"tat_gogogo/data/crawler/repository"
-	"tat_gogogo/data/crawler/service"
 	"tat_gogogo/interface/controller"
 	"tat_gogogo/usecase"
+	"tat_gogogo/usecase/service"
 )
 
 // Injectors from injector.go:

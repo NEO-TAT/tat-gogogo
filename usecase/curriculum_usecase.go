@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"tat_gogogo/data/crawler/service"
+	"tat_gogogo/usecase/service"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
 

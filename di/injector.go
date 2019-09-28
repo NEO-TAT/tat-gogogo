@@ -4,9 +4,9 @@ package di
 
 import (
 	"tat_gogogo/data/crawler/repository"
-	"tat_gogogo/data/crawler/service"
 	"tat_gogogo/interface/controller"
 	"tat_gogogo/usecase"
+	"tat_gogogo/usecase/service"
 
 	"github.com/google/wire"
 )
