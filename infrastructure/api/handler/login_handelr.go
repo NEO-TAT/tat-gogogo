@@ -2,9 +2,9 @@ package handler
 
 import (
 	"log"
+	"tat_gogogo/di"
 
 	"tat_gogogo/infrastructure/middleware"
-	"tat_gogogo/interface/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,8 +22,8 @@ func LoginHandler(c *gin.Context) {
 	studentID := c.PostForm("studentID")
 	password := c.PostForm("password")
 
-	loginController := controller.NewLoginController(studentID, password)
-	result, err := loginController.Login()
+	loginController := di.InjectLoginController()
+	result, err := loginController.Login(studentID, password)
 
 	if err != nil {
 		log.Printf("failed to fetch login cookie")

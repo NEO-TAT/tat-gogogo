@@ -2,11 +2,7 @@ package handler
 
 import (
 	"log"
-	"tat_gogogo/domain/model"
-	"tat_gogogo/domain/repository"
-	"tat_gogogo/domain/service"
-	"tat_gogogo/interface/controller"
-	"tat_gogogo/usecase"
+	"tat_gogogo/di"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
@@ -24,10 +20,10 @@ func CoursesHandler(c *gin.Context) {
 	studentID := claims["studentID"].(string)
 	password := claims["password"].(string)
 
-	loginController := controller.NewLoginController(studentID, password)
-	courseController := controller.NewCoursesController(studentID, password, targetStudentID, year, semester)
+	loginController := di.InjectLoginController()
+	courseController := di.InjectCourseController()
 
-	result, err := loginController.Login()
+	result, err := loginController.Login(studentID, password)
 	if err != nil {
 		c.Status(500)
 		return
@@ -53,23 +49,23 @@ func CoursesHandler(c *gin.Context) {
 		return
 	}
 
-	curriculums, err := courseController.GetCurriculums()
+	curriculums, err := courseController.GetCurriculums(studentID, targetStudentID)
 	if err != nil {
 		c.Status(500)
 		return
 	}
 
-	isSameYearAndSem := courseController.IsSameYearAndSem(curriculums)
+	isSameYearAndSem := courseController.IsSameYearAndSem(curriculums, year, semester)
 
 	if !isSameYearAndSem {
-		result := getNoDataResult()
+		result := courseController.GetNoDataResult()
 		c.JSON(result.GetStatus(), gin.H{
 			"message": result.GetData(),
 		})
 		return
 	}
 
-	infoResult, err := courseController.GetInfoResult()
+	infoResult, err := courseController.GetInfoResult(studentID, password, targetStudentID, year, semester)
 	if err != nil {
 		log.Panicln(err)
 		c.Status(500)
@@ -78,11 +74,4 @@ func CoursesHandler(c *gin.Context) {
 
 	c.JSON(infoResult.GetStatus(), infoResult.GetData())
 
-}
-
-func getNoDataResult() *model.Result {
-	resultRepo := repository.NewResultRepository()
-	resultService := service.NewResultService(resultRepo)
-	resultUsecase := usecase.NewResultUseCase(resultRepo, resultService)
-	return resultUsecase.GetNoDataResult()
 }

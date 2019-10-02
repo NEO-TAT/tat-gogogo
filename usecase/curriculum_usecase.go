@@ -1,9 +1,9 @@
 package usecase
 
 import (
+	"tat_gogogo/usecase/service"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
-	"tat_gogogo/domain/service"
 
 	"log"
 )
@@ -18,15 +18,15 @@ type CurriculumUseCase interface {
 }
 
 type curriculumUseCase struct {
-	repo    repository.CurriculumRepository
-	service *service.CurriculumService
+	curriculumRepo repository.CurriculumRepository
+	service        *service.CurriculumService
 }
 
 /*
 NewCurriculumUseCase init a new curriculum usecase
 */
-func NewCurriculumUseCase(repo repository.CurriculumRepository, service *service.CurriculumService) CurriculumUseCase {
-	return &curriculumUseCase{repo: repo, service: service}
+func NewCurriculumUseCase(curriculumRepo repository.CurriculumRepository, service *service.CurriculumService) CurriculumUseCase {
+	return &curriculumUseCase{curriculumRepo: curriculumRepo, service: service}
 }
 
 /*
@@ -57,5 +57,5 @@ func (c *curriculumUseCase) GetCurriculums(targetStudentID string) ([]model.Curr
 		log.Panicln(err)
 		return nil, err
 	}
-	return c.repo.ParseCurriculums(doc), nil
+	return c.curriculumRepo.ParseCurriculums(doc), nil
 }

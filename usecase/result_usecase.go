@@ -4,7 +4,7 @@ import (
 	"log"
 	"tat_gogogo/domain/model"
 	"tat_gogogo/domain/repository"
-	"tat_gogogo/domain/service"
+	"tat_gogogo/usecase/service"
 	"tat_gogogo/utilities/httcli"
 )
 
@@ -19,22 +19,34 @@ type ResultUseCase interface {
 }
 
 type resultUsecase struct {
-	repo    repository.ResultRepository
-	service *service.ResultService
+	resultRepo     repository.ResultRepository
+	curriculumRepo repository.CurriculumRepository
+	infoRepo       repository.InfoRepository
+	service        *service.ResultService
 }
 
 /*
 NewResultUseCase init a new result usecase
 */
-func NewResultUseCase(repo repository.ResultRepository, service *service.ResultService) ResultUseCase {
-	return &resultUsecase{repo: repo, service: service}
+func NewResultUseCase(
+	resultRepo repository.ResultRepository,
+	curriculumRepo repository.CurriculumRepository,
+	infoRepo repository.InfoRepository,
+	service *service.ResultService,
+) ResultUseCase {
+	return &resultUsecase{
+		resultRepo:     resultRepo,
+		curriculumRepo: curriculumRepo,
+		infoRepo:       infoRepo,
+		service:        service,
+	}
 }
 
 func (r *resultUsecase) LoginResult(studentID, password string) (loginResult *model.Result, err error) {
 	req := r.service.NewLoginRequest(studentID, password)
 	client := httcli.GetInstance()
 	resp, err := client.Do(req)
-	loginResult = r.repo.GetLoginResultByResponse(resp)
+	loginResult = r.resultRepo.GetLoginResultByResponse(resp)
 
 	return loginResult, err
 }
@@ -47,9 +59,8 @@ func (r *resultUsecase) CurriculumResultBy(studentID, targetStudentID string) (c
 		targetStudentID = studentID
 	}
 
-	curriculumRepo := repository.NewCurriculumRepository()
-	curriculumService := service.NewCurriculumService(curriculumRepo)
-	curriculumUsecase := NewCurriculumUseCase(curriculumRepo, curriculumService)
+	curriculumService := service.NewCurriculumService(r.curriculumRepo)
+	curriculumUsecase := NewCurriculumUseCase(r.curriculumRepo, curriculumService)
 
 	curriculums, err := curriculumUsecase.GetCurriculums(targetStudentID)
 	if err != nil {
@@ -57,7 +68,7 @@ func (r *resultUsecase) CurriculumResultBy(studentID, targetStudentID string) (c
 		return nil, err
 	}
 
-	return r.repo.GetCurriculumResult(curriculums), nil
+	return r.resultRepo.GetCurriculumResult(curriculums), nil
 }
 
 /*
@@ -68,9 +79,8 @@ func (r *resultUsecase) InfoResultBy(studentID, targetStudentID, year, semester 
 		targetStudentID = studentID
 	}
 
-	infoRepo := repository.NewInfoRepository()
-	infoService := service.NewInfoService(infoRepo)
-	infoUsecase := NewInfoUseCase(infoRepo, infoService)
+	infoService := service.NewInfoService(r.infoRepo)
+	infoUsecase := NewInfoUseCase(r.infoRepo, infoService)
 
 	info, err := infoUsecase.GetInfo(targetStudentID, year, semester)
 	if err != nil {
@@ -78,7 +88,7 @@ func (r *resultUsecase) InfoResultBy(studentID, targetStudentID, year, semester 
 		return nil, err
 	}
 
-	return r.repo.GetCurriculumCorseResult(info), nil
+	return r.resultRepo.GetCurriculumCorseResult(info), nil
 }
 
 /*
